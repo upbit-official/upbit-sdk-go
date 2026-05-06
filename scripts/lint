@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+
+set -e
+
+cd "$(dirname "$0")/.."
+
+# Exclude examples/ — each file is a standalone `go run examples/<file>.go` program,
+# so multiple `package main` declarations in one directory are expected.
+packages=$(go list ./... | grep -v '/examples')
+
+echo "==> Running Go build"
+go build $packages
+
+echo "==> Checking tests compile"
+go test -run=^$ $packages
