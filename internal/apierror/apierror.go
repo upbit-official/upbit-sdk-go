@@ -22,7 +22,7 @@ type APIError struct {
 		Name        respjson.Field
 		Message     respjson.Field
 		ExtraFields map[string]respjson.Field
-		Raw         string
+		raw         string
 	} `json:"-"`
 	StatusCode int
 	Request    *http.Request
@@ -32,14 +32,14 @@ type APIError struct {
 // Error is an alias for APIError for backward compatibility.
 type Error = APIError
 
-// RawJSON returns the unmodified JSON received from the API.
-func (r APIError) RawJSON() string { return r.JSON.Raw }
+// Returns the unmodified JSON received from the API
+func (r APIError) RawJSON() string { return r.JSON.raw }
 
 // UnmarshalJSON parses the Upbit API error body.
 // Handles shape B ({"error":{"name":...,"message":...}}) and
 // shape A ({"name":...,"message":...}).
 func (r *APIError) UnmarshalJSON(data []byte) error {
-	r.JSON.Raw = string(data)
+	r.JSON.raw = string(data)
 
 	// Populate ExtraFields with all top-level keys not handled as named fields,
 	// preserving backward-compat with callers that inspect r.JSON.ExtraFields.
@@ -112,7 +112,7 @@ func (r *APIError) Error() string {
 		}
 		return base
 	}
-	return fmt.Sprintf("%s %q: %d %s %s", r.Request.Method, r.Request.URL, r.Response.StatusCode, http.StatusText(r.Response.StatusCode), r.JSON.Raw)
+	return fmt.Sprintf("%s %q: %d %s %s", r.Request.Method, r.Request.URL, r.Response.StatusCode, http.StatusText(r.Response.StatusCode), r.JSON.raw)
 }
 
 func (r *APIError) DumpRequest(body bool) []byte {

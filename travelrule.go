@@ -37,6 +37,8 @@ func NewTravelRuleService(opts ...option.RequestOption) (r TravelRuleService) {
 //
 // - docs(kr): https://docs.upbit.com/kr/reference/list-travelrule-vasps
 // - docs(global): https://global-docs.upbit.com/reference/list-travelrule-vasps
+//
+// Retrieves the list of exchanges supporting Travel Rule.
 func (r *TravelRuleService) ListVasps(ctx context.Context, opts ...option.RequestOption) (res *[]TravelRuleListVaspsResponse, err error) {
 	opts = slices.Concat(r.options, opts)
 	path := "v1/travel_rule/vasps"
@@ -51,6 +53,8 @@ func (r *TravelRuleService) ListVasps(ctx context.Context, opts ...option.Reques
 //   - docs(kr): https://docs.upbit.com/kr/reference/verify-travelrule-by-txid
 //   - docs(global):
 //     https://global-docs.upbit.com/reference/verify-travelrule-by-txid
+//
+// Retrieves travel rule verification using the deposit TxID.
 func (r *TravelRuleService) VerifyDepositByTxid(ctx context.Context, body TravelRuleVerifyDepositByTxidParams, opts ...option.RequestOption) (res *VerificationResult, err error) {
 	opts = slices.Concat(r.options, opts)
 	path := "v1/travel_rule/deposit/txid"
@@ -65,6 +69,8 @@ func (r *TravelRuleService) VerifyDepositByTxid(ctx context.Context, body Travel
 //   - docs(kr): https://docs.upbit.com/kr/reference/verify-travelrule-by-uuid
 //   - docs(global):
 //     https://global-docs.upbit.com/reference/verify-travelrule-by-uuid
+//
+// Retrieves travel rule verification using the deposit UUID.
 func (r *TravelRuleService) VerifyDepositByUuid(ctx context.Context, body TravelRuleVerifyDepositByUuidParams, opts ...option.RequestOption) (res *VerificationResult, err error) {
 	opts = slices.Concat(r.options, opts)
 	path := "v1/travel_rule/deposit/uuid"
@@ -97,12 +103,12 @@ type VerificationResult struct {
 		DepositUuid        respjson.Field
 		VerificationResult respjson.Field
 		ExtraFields        map[string]respjson.Field
-		Raw                string
+		raw                string
 	} `json:"-"`
 }
 
-// RawJSON returns the unmodified JSON received from the API.
-func (r VerificationResult) RawJSON() string { return r.JSON.Raw }
+// Returns the unmodified JSON received from the API
+func (r VerificationResult) RawJSON() string { return r.JSON.raw }
 func (r *VerificationResult) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
@@ -146,12 +152,12 @@ type TravelRuleListVaspsResponse struct {
 		VaspUuid     respjson.Field
 		Withdrawable respjson.Field
 		ExtraFields  map[string]respjson.Field
-		Raw          string
+		raw          string
 	} `json:"-"`
 }
 
-// RawJSON returns the unmodified JSON received from the API.
-func (r TravelRuleListVaspsResponse) RawJSON() string { return r.JSON.Raw }
+// Returns the unmodified JSON received from the API
+func (r TravelRuleListVaspsResponse) RawJSON() string { return r.JSON.raw }
 func (r *TravelRuleListVaspsResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }

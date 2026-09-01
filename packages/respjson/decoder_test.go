@@ -19,11 +19,11 @@ type UnionOfStringIntOrObject struct {
 		OfInt    rj.Field
 		Type     rj.Field
 		Function rj.Field
-		Raw      string
+		raw      string
 	} `json:"-"`
 }
 
-func (u UnionOfStringIntOrObject) RawJSON() string { return u.JSON.Raw }
+func (u UnionOfStringIntOrObject) RawJSON() string { return u.JSON.raw }
 func (r *UnionOfStringIntOrObject) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
@@ -35,11 +35,11 @@ type SubFields struct {
 		OfBool      rj.Field
 		Name        rj.Field
 		ExtraFields map[string]rj.Field
-		Raw         string
+		raw         string
 	} `json:"-"`
 }
 
-func (r SubFields) RawJSON() string { return r.JSON.Raw }
+func (r SubFields) RawJSON() string { return r.JSON.raw }
 func (r *SubFields) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }

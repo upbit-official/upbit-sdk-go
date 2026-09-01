@@ -1,5 +1,5 @@
 // Auto-generated example — do not edit manually.
-// Recent Trades History (GET /v1/trades/ticks)
+// List Pair Trades (GET /v1/trades/ticks)
 package main
 
 import (
@@ -10,7 +10,7 @@ import (
 )
 
 // default
-func exampleRecentTradesHistory() {
+func exampleListPairTrades() {
 	client := upbit.NewClient()
 	params := upbit.TradeListParams{
 		Market: "KRW-BTC",
@@ -23,5 +23,5 @@ func exampleRecentTradesHistory() {
 }
 
 func main() {
-	exampleRecentTradesHistory()
+	exampleListPairTrades()
 }

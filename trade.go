@@ -33,12 +33,14 @@ func NewTradeService(opts ...option.RequestOption) (r TradeService) {
 	return
 }
 
-// Recent Trades History
+// List Pair Trades
 //
 // GET /v1/trades/ticks
 //
-// - docs(kr): https://docs.upbit.com/kr/reference/recent-trades-history
-// - docs(global): https://global-docs.upbit.com/reference/recent-trades-history
+// - docs(kr): https://docs.upbit.com/kr/reference/list-pair-trades
+// - docs(global): https://global-docs.upbit.com/reference/list-pair-trades
+//
+// Retrieves recent trades for the specified pair.
 func (r *TradeService) List(ctx context.Context, query TradeListParams, opts ...option.RequestOption) (res *[]TradeListResponse, err error) {
 	var preClientOpts = []option.RequestOption{requestconfig.WithSecurity(requestconfig.Security{})}
 	opts = slices.Concat(preClientOpts, r.options, opts)
@@ -94,12 +96,12 @@ type TradeListResponse struct {
 		TradeTimeUtc     respjson.Field
 		TradeVolume      respjson.Field
 		ExtraFields      map[string]respjson.Field
-		Raw              string
+		raw              string
 	} `json:"-"`
 }
 
-// RawJSON returns the unmodified JSON received from the API.
-func (r TradeListResponse) RawJSON() string { return r.JSON.Raw }
+// Returns the unmodified JSON received from the API
+func (r TradeListResponse) RawJSON() string { return r.JSON.raw }
 func (r *TradeListResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }

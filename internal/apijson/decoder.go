@@ -12,6 +12,7 @@ import (
 	"strconv"
 	"sync"
 	"time"
+	"unsafe"
 
 	"github.com/tidwall/gjson"
 )
@@ -385,8 +386,8 @@ func (d *decoderBuilder) newStructTypeDecoder(t reflect.Type) decoderFunc {
 
 	return func(node gjson.Result, value reflect.Value, state *decoderState) (err error) {
 		if field := value.FieldByName("JSON"); field.IsValid() {
-			if raw := field.FieldByName("Raw"); raw.IsValid() {
-				raw.SetString(node.Raw)
+			if raw := field.FieldByName("raw"); raw.IsValid() {
+				setUnexportedField(raw, node.Raw)
 			}
 		}
 
@@ -658,6 +659,10 @@ func (d *decoderBuilder) newTimeTypeDecoder(t reflect.Type) decoderFunc {
 
 		return fmt.Errorf("unable to leniently parse date-time string: %s", n.Str)
 	}
+}
+
+func setUnexportedField(field reflect.Value, value any) {
+	reflect.NewAt(field.Type(), unsafe.Pointer(field.UnsafeAddr())).Elem().Set(reflect.ValueOf(value))
 }
 
 func guardStrict(state *decoderState, cond bool) bool {

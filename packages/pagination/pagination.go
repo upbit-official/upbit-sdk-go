@@ -26,14 +26,14 @@ type PageNumberPage[T any] struct {
 	JSON struct {
 		Items       respjson.Field
 		ExtraFields map[string]respjson.Field
-		Raw         string
+		raw         string
 	} `json:"-"`
 	cfg *requestconfig.RequestConfig
 	res *http.Response
 }
 
-// RawJSON returns the unmodified JSON received from the API.
-func (r PageNumberPage[T]) RawJSON() string { return r.JSON.Raw }
+// Returns the unmodified JSON received from the API
+func (r PageNumberPage[T]) RawJSON() string { return r.JSON.raw }
 func (r *PageNumberPage[T]) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
@@ -134,14 +134,14 @@ type UuidCursorIDPage[T any] struct {
 	JSON struct {
 		Items       respjson.Field
 		ExtraFields map[string]respjson.Field
-		Raw         string
+		raw         string
 	} `json:"-"`
 	cfg *requestconfig.RequestConfig
 	res *http.Response
 }
 
-// RawJSON returns the unmodified JSON received from the API.
-func (r UuidCursorIDPage[T]) RawJSON() string { return r.JSON.Raw }
+// Returns the unmodified JSON received from the API
+func (r UuidCursorIDPage[T]) RawJSON() string { return r.JSON.raw }
 func (r *UuidCursorIDPage[T]) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }

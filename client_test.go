@@ -41,6 +41,59 @@ func TestUserAgentHeader(t *testing.T) {
 	}
 }
 
+func TestDeprecatedCustomHeadersEnvIgnored(t *testing.T) {
+	t.Setenv("UPBIT_CUSTOM_HEADERS", "X-Env-Header: should-not-be-sent")
+
+	var customHeader string
+	client := upbit.NewClient(
+		option.WithHTTPClient(&http.Client{
+			Transport: &closureTransport{
+				fn: func(req *http.Request) (*http.Response, error) {
+					customHeader = req.Header.Get("X-Env-Header")
+					return &http.Response{
+						StatusCode: http.StatusOK,
+					}, nil
+				},
+			},
+		}),
+	)
+
+	_, _ = client.TradingPairs.List(context.Background(), upbit.TradingPairListParams{})
+	if customHeader != "" {
+		t.Errorf("Expected UPBIT_CUSTOM_HEADERS to be ignored, got header value: %#v", customHeader)
+	}
+}
+
+func TestClientLevelHeaderOptions(t *testing.T) {
+	var customValues []string
+	var removedHeader string
+	client := upbit.NewClient(
+		option.WithHeader("X-Custom-Header", "one"),
+		option.WithHeaderAdd("X-Custom-Header", "two"),
+		option.WithHeader("X-Removed-Header", "remove-me"),
+		option.WithHeaderDel("X-Removed-Header"),
+		option.WithHTTPClient(&http.Client{
+			Transport: &closureTransport{
+				fn: func(req *http.Request) (*http.Response, error) {
+					customValues = req.Header.Values("X-Custom-Header")
+					removedHeader = req.Header.Get("X-Removed-Header")
+					return &http.Response{
+						StatusCode: http.StatusOK,
+					}, nil
+				},
+			},
+		}),
+	)
+
+	_, _ = client.TradingPairs.List(context.Background(), upbit.TradingPairListParams{})
+	if len(customValues) != 2 || customValues[0] != "one" || customValues[1] != "two" {
+		t.Errorf("Expected client-level header options to apply, got: %#v", customValues)
+	}
+	if removedHeader != "" {
+		t.Errorf("Expected client-level header delete to apply, got: %#v", removedHeader)
+	}
+}
+
 func TestRetryAfter(t *testing.T) {
 	attempts := 0
 	client := upbit.NewClient(

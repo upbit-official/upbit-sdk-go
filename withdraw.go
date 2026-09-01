@@ -40,6 +40,9 @@ func NewWithdrawService(opts ...option.RequestOption) (r WithdrawService) {
 //
 // - docs(kr): https://docs.upbit.com/kr/reference/get-withdrawal
 // - docs(global): https://global-docs.upbit.com/reference/get-withdrawal
+//
+// Retrieves the latest single withdrawal information. To query a specific
+// withdrawal, you can specify the withdrawal’s UUID or transaction ID (TXID).
 func (r *WithdrawService) Get(ctx context.Context, query WithdrawGetParams, opts ...option.RequestOption) (res *Withdraw, err error) {
 	opts = slices.Concat(r.options, opts)
 	path := "v1/withdraw"
@@ -53,6 +56,8 @@ func (r *WithdrawService) Get(ctx context.Context, query WithdrawGetParams, opts
 //
 // - docs(kr): https://docs.upbit.com/kr/reference/list-withdrawals
 // - docs(global): https://global-docs.upbit.com/reference/list-withdrawals
+//
+// Retrieves latest withdrawal list.
 func (r *WithdrawService) List(ctx context.Context, query WithdrawListParams, opts ...option.RequestOption) (res *pagination.UuidCursorIDPage[Withdraw], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.options, opts)
@@ -76,6 +81,8 @@ func (r *WithdrawService) List(ctx context.Context, query WithdrawListParams, op
 //
 // - docs(kr): https://docs.upbit.com/kr/reference/list-withdrawals
 // - docs(global): https://global-docs.upbit.com/reference/list-withdrawals
+//
+// Retrieves latest withdrawal list.
 func (r *WithdrawService) ListAutoPaging(ctx context.Context, query WithdrawListParams, opts ...option.RequestOption) *pagination.UuidCursorIDPageAutoPager[Withdraw] {
 	return pagination.NewUuidCursorIDPageAutoPager(r.List(ctx, query, opts...))
 }
@@ -86,6 +93,9 @@ func (r *WithdrawService) ListAutoPaging(ctx context.Context, query WithdrawList
 //
 // - docs(kr): https://docs.upbit.com/kr/reference/cancel-withdrawal
 // - docs(global): https://global-docs.upbit.com/reference/cancel-withdrawal
+//
+// Cancel a completed digital asset withdrawal request by specifying the withdrawal
+// UUID.
 func (r *WithdrawService) CancelWithdrawal(ctx context.Context, body WithdrawCancelWithdrawalParams, opts ...option.RequestOption) (res *Withdraw, err error) {
 	opts = slices.Concat(r.options, opts)
 	path := "v1/withdraws/coin"
@@ -98,7 +108,9 @@ func (r *WithdrawService) CancelWithdrawal(ctx context.Context, body WithdrawCan
 // POST /v1/withdraws/krw
 //
 // - docs(kr): https://docs.upbit.com/kr/reference/withdraw-krw
-// - docs(global): https://global-docs.upbit.com/reference/withdraw-krw
+// - Supported only in Korea.
+//
+// 원화(KRW) 출금을 요청합니다.
 func (r *WithdrawService) NewKrwWithdrawal(ctx context.Context, body WithdrawNewKrwWithdrawalParams, opts ...option.RequestOption) (res *WithdrawNewKrwWithdrawalResponse, err error) {
 	opts = slices.Concat(r.options, opts)
 	path := "v1/withdraws/krw"
@@ -112,6 +124,8 @@ func (r *WithdrawService) NewKrwWithdrawal(ctx context.Context, body WithdrawNew
 //
 // - docs(kr): https://docs.upbit.com/kr/reference/withdraw
 // - docs(global): https://global-docs.upbit.com/reference/withdraw
+//
+// Requests a withdrawal of digital asset.
 func (r *WithdrawService) NewWithdrawal(ctx context.Context, body WithdrawNewWithdrawalParams, opts ...option.RequestOption) (res *Withdraw, err error) {
 	opts = slices.Concat(r.options, opts)
 	path := "v1/withdraws/coin"
@@ -126,6 +140,8 @@ func (r *WithdrawService) NewWithdrawal(ctx context.Context, body WithdrawNewWit
 //   - docs(kr): https://docs.upbit.com/kr/reference/list-withdrawal-addresses
 //   - docs(global):
 //     https://global-docs.upbit.com/reference/list-withdrawal-addresses
+//
+// Retrieves the list of withdrawal whitelist addresses registered to the account.
 func (r *WithdrawService) ListCoinAddresses(ctx context.Context, opts ...option.RequestOption) (res *[]WithdrawListCoinAddressesResponse, err error) {
 	opts = slices.Concat(r.options, opts)
 	path := "v1/withdraws/coin_addresses"
@@ -140,6 +156,9 @@ func (r *WithdrawService) ListCoinAddresses(ctx context.Context, opts ...option.
 //   - docs(kr): https://docs.upbit.com/kr/reference/available-withdrawal-information
 //   - docs(global):
 //     https://global-docs.upbit.com/reference/available-withdrawal-information
+//
+// Retrieves withdrawal availability information for the specified currency,
+// including its withdrawal policy and user balance.
 func (r *WithdrawService) GetChance(ctx context.Context, query WithdrawGetChanceParams, opts ...option.RequestOption) (res *WithdrawGetChanceResponse, err error) {
 	opts = slices.Concat(r.options, opts)
 	path := "v1/withdraws/chance"
@@ -205,12 +224,12 @@ type Withdraw struct {
 		Uuid            respjson.Field
 		DoneAt          respjson.Field
 		ExtraFields     map[string]respjson.Field
-		Raw             string
+		raw             string
 	} `json:"-"`
 }
 
-// RawJSON returns the unmodified JSON received from the API.
-func (r Withdraw) RawJSON() string { return r.JSON.Raw }
+// Returns the unmodified JSON received from the API
+func (r Withdraw) RawJSON() string { return r.JSON.raw }
 func (r *Withdraw) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
@@ -303,12 +322,12 @@ type WithdrawNewKrwWithdrawalResponse struct {
 		Uuid            respjson.Field
 		DoneAt          respjson.Field
 		ExtraFields     map[string]respjson.Field
-		Raw             string
+		raw             string
 	} `json:"-"`
 }
 
-// RawJSON returns the unmodified JSON received from the API.
-func (r WithdrawNewKrwWithdrawalResponse) RawJSON() string { return r.JSON.Raw }
+// Returns the unmodified JSON received from the API
+func (r WithdrawNewKrwWithdrawalResponse) RawJSON() string { return r.JSON.raw }
 func (r *WithdrawNewKrwWithdrawalResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
@@ -397,12 +416,12 @@ type WithdrawListCoinAddressesResponse struct {
 		SecondaryAddress       respjson.Field
 		WalletType             respjson.Field
 		ExtraFields            map[string]respjson.Field
-		Raw                    string
+		raw                    string
 	} `json:"-"`
 }
 
-// RawJSON returns the unmodified JSON received from the API.
-func (r WithdrawListCoinAddressesResponse) RawJSON() string { return r.JSON.Raw }
+// Returns the unmodified JSON received from the API
+func (r WithdrawListCoinAddressesResponse) RawJSON() string { return r.JSON.raw }
 func (r *WithdrawListCoinAddressesResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
@@ -423,12 +442,12 @@ type WithdrawGetChanceResponse struct {
 		MemberLevel   respjson.Field
 		WithdrawLimit respjson.Field
 		ExtraFields   map[string]respjson.Field
-		Raw           string
+		raw           string
 	} `json:"-"`
 }
 
-// RawJSON returns the unmodified JSON received from the API.
-func (r WithdrawGetChanceResponse) RawJSON() string { return r.JSON.Raw }
+// Returns the unmodified JSON received from the API
+func (r WithdrawGetChanceResponse) RawJSON() string { return r.JSON.raw }
 func (r *WithdrawGetChanceResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
@@ -456,12 +475,12 @@ type WithdrawGetChanceResponseAccount struct {
 		Locked              respjson.Field
 		UnitCurrency        respjson.Field
 		ExtraFields         map[string]respjson.Field
-		Raw                 string
+		raw                 string
 	} `json:"-"`
 }
 
-// RawJSON returns the unmodified JSON received from the API.
-func (r WithdrawGetChanceResponseAccount) RawJSON() string { return r.JSON.Raw }
+// Returns the unmodified JSON received from the API
+func (r WithdrawGetChanceResponseAccount) RawJSON() string { return r.JSON.raw }
 func (r *WithdrawGetChanceResponseAccount) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
@@ -492,12 +511,12 @@ type WithdrawGetChanceResponseCurrency struct {
 		WalletSupport respjson.Field
 		WithdrawFee   respjson.Field
 		ExtraFields   map[string]respjson.Field
-		Raw           string
+		raw           string
 	} `json:"-"`
 }
 
-// RawJSON returns the unmodified JSON received from the API.
-func (r WithdrawGetChanceResponseCurrency) RawJSON() string { return r.JSON.Raw }
+// Returns the unmodified JSON received from the API
+func (r WithdrawGetChanceResponseCurrency) RawJSON() string { return r.JSON.raw }
 func (r *WithdrawGetChanceResponseCurrency) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
@@ -531,12 +550,12 @@ type WithdrawGetChanceResponseMemberLevel struct {
 		TwoFactorAuthVerified respjson.Field
 		WalletLocked          respjson.Field
 		ExtraFields           map[string]respjson.Field
-		Raw                   string
+		raw                   string
 	} `json:"-"`
 }
 
-// RawJSON returns the unmodified JSON received from the API.
-func (r WithdrawGetChanceResponseMemberLevel) RawJSON() string { return r.JSON.Raw }
+// Returns the unmodified JSON received from the API
+func (r WithdrawGetChanceResponseMemberLevel) RawJSON() string { return r.JSON.raw }
 func (r *WithdrawGetChanceResponseMemberLevel) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
@@ -570,12 +589,12 @@ type WithdrawGetChanceResponseWithdrawLimit struct {
 		Minimum             respjson.Field
 		WithdrawDelayedFiat respjson.Field
 		ExtraFields         map[string]respjson.Field
-		Raw                 string
+		raw                 string
 	} `json:"-"`
 }
 
-// RawJSON returns the unmodified JSON received from the API.
-func (r WithdrawGetChanceResponseWithdrawLimit) RawJSON() string { return r.JSON.Raw }
+// Returns the unmodified JSON received from the API
+func (r WithdrawGetChanceResponseWithdrawLimit) RawJSON() string { return r.JSON.raw }
 func (r *WithdrawGetChanceResponseWithdrawLimit) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }

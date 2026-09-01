@@ -36,6 +36,8 @@ func NewAccountService(opts ...option.RequestOption) (r AccountService) {
 //
 // - docs(kr): https://docs.upbit.com/kr/reference/get-balance
 // - docs(global): https://global-docs.upbit.com/reference/get-balance
+//
+// Retrieves the list of assets and balances owned by the account.
 func (r *AccountService) List(ctx context.Context, opts ...option.RequestOption) (res *[]AccountListResponse, err error) {
 	opts = slices.Concat(r.options, opts)
 	path := "v1/accounts"
@@ -66,12 +68,12 @@ type AccountListResponse struct {
 		Locked              respjson.Field
 		UnitCurrency        respjson.Field
 		ExtraFields         map[string]respjson.Field
-		Raw                 string
+		raw                 string
 	} `json:"-"`
 }
 
-// RawJSON returns the unmodified JSON received from the API.
-func (r AccountListResponse) RawJSON() string { return r.JSON.Raw }
+// Returns the unmodified JSON received from the API
+func (r AccountListResponse) RawJSON() string { return r.JSON.raw }
 func (r *AccountListResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }

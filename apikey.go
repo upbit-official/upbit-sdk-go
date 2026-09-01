@@ -35,7 +35,9 @@ func NewAPIKeyService(opts ...option.RequestOption) (r APIKeyService) {
 // GET /v1/api_keys
 //
 // - docs(kr): https://docs.upbit.com/kr/reference/list-api-keys
-// - docs(global): https://global-docs.upbit.com/reference/list-api-keys
+// - Supported only in Korea.
+//
+// 계정의 모든 API Key 목록과 각 Key의 만료일자를 조회합니다.
 func (r *APIKeyService) List(ctx context.Context, opts ...option.RequestOption) (res *[]APIKeyListResponse, err error) {
 	opts = slices.Concat(r.options, opts)
 	path := "v1/api_keys"
@@ -55,12 +57,12 @@ type APIKeyListResponse struct {
 		AccessKey   respjson.Field
 		ExpireAt    respjson.Field
 		ExtraFields map[string]respjson.Field
-		Raw         string
+		raw         string
 	} `json:"-"`
 }
 
-// RawJSON returns the unmodified JSON received from the API.
-func (r APIKeyListResponse) RawJSON() string { return r.JSON.Raw }
+// Returns the unmodified JSON received from the API
+func (r APIKeyListResponse) RawJSON() string { return r.JSON.raw }
 func (r *APIKeyListResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }

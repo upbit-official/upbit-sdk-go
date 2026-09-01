@@ -97,6 +97,8 @@ func (r *OrderService) Cancel(ctx context.Context, body OrderCancelParams, opts 
 //
 // - docs(kr): https://docs.upbit.com/kr/reference/cancel-and-new-order
 // - docs(global): https://global-docs.upbit.com/reference/cancel-and-new-order
+//
+// Cancel existing order and create new order in a single request.
 func (r *OrderService) CancelAndNew(ctx context.Context, body OrderCancelAndNewParams, opts ...option.RequestOption) (res *OrderCancelAndNewResponse, err error) {
 	opts = slices.Concat(r.options, opts)
 	path := "v1/orders/cancel_and_new"
@@ -125,6 +127,8 @@ func (r *OrderService) CancelByUuids(ctx context.Context, body OrderCancelByUuid
 //
 // - docs(kr): https://docs.upbit.com/kr/reference/batch-cancel-orders
 // - docs(global): https://global-docs.upbit.com/reference/batch-cancel-orders
+//
+// Batch cancel up to 300 orders that satisfy the specified conditions.
 func (r *OrderService) CancelOpen(ctx context.Context, body OrderCancelOpenParams, opts ...option.RequestOption) (res *BatchCancelResult, err error) {
 	opts = slices.Concat(r.options, opts)
 	path := "v1/orders/open"
@@ -153,6 +157,8 @@ func (r *OrderService) ListByUuids(ctx context.Context, query OrderListByUuidsPa
 //
 // - docs(kr): https://docs.upbit.com/kr/reference/list-closed-orders
 // - docs(global): https://global-docs.upbit.com/reference/list-closed-orders
+//
+// Retrieves the list of closed orders.
 func (r *OrderService) ListClosed(ctx context.Context, query OrderListClosedParams, opts ...option.RequestOption) (res *[]Order, err error) {
 	opts = slices.Concat(r.options, opts)
 	path := "v1/orders/closed"
@@ -166,6 +172,8 @@ func (r *OrderService) ListClosed(ctx context.Context, query OrderListClosedPara
 //
 // - docs(kr): https://docs.upbit.com/kr/reference/list-open-orders
 // - docs(global): https://global-docs.upbit.com/reference/list-open-orders
+//
+// Retrieves the list of open orders that are currently pending execution.
 func (r *OrderService) ListOpen(ctx context.Context, query OrderListOpenParams, opts ...option.RequestOption) (res *pagination.PageNumberPage[Order], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.options, opts)
@@ -189,6 +197,8 @@ func (r *OrderService) ListOpen(ctx context.Context, query OrderListOpenParams, 
 //
 // - docs(kr): https://docs.upbit.com/kr/reference/list-open-orders
 // - docs(global): https://global-docs.upbit.com/reference/list-open-orders
+//
+// Retrieves the list of open orders that are currently pending execution.
 func (r *OrderService) ListOpenAutoPaging(ctx context.Context, query OrderListOpenParams, opts ...option.RequestOption) *pagination.PageNumberPageAutoPager[Order] {
 	return pagination.NewPageNumberPageAutoPager(r.ListOpen(ctx, query, opts...))
 }
@@ -200,6 +210,8 @@ func (r *OrderService) ListOpenAutoPaging(ctx context.Context, query OrderListOp
 //   - docs(kr): https://docs.upbit.com/kr/reference/available-order-information
 //   - docs(global):
 //     https://global-docs.upbit.com/reference/available-order-information
+//
+// Retrieves the order availability information for the specified pair.
 func (r *OrderService) GetChance(ctx context.Context, query OrderGetChanceParams, opts ...option.RequestOption) (res *OrderGetChanceResponse, err error) {
 	opts = slices.Concat(r.options, opts)
 	path := "v1/orders/chance"
@@ -211,8 +223,8 @@ func (r *OrderService) GetChance(ctx context.Context, query OrderGetChanceParams
 //
 // POST /v1/orders/test
 //
-// - docs(kr): https://docs.upbit.com/kr/reference/test-order
-// - docs(global): https://global-docs.upbit.com/reference/test-order
+// - docs(kr): https://docs.upbit.com/kr/reference/order-test
+// - docs(global): https://global-docs.upbit.com/reference/order-test
 //
 // Order parameter rules by `ord_type`:
 //
@@ -244,12 +256,12 @@ type BatchCancelResult struct {
 		Failed      respjson.Field
 		Success     respjson.Field
 		ExtraFields map[string]respjson.Field
-		Raw         string
+		raw         string
 	} `json:"-"`
 }
 
-// RawJSON returns the unmodified JSON received from the API.
-func (r BatchCancelResult) RawJSON() string { return r.JSON.Raw }
+// Returns the unmodified JSON received from the API
+func (r BatchCancelResult) RawJSON() string { return r.JSON.raw }
 func (r *BatchCancelResult) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
@@ -265,12 +277,12 @@ type BatchCancelResultFailed struct {
 		Count       respjson.Field
 		Orders      respjson.Field
 		ExtraFields map[string]respjson.Field
-		Raw         string
+		raw         string
 	} `json:"-"`
 }
 
-// RawJSON returns the unmodified JSON received from the API.
-func (r BatchCancelResultFailed) RawJSON() string { return r.JSON.Raw }
+// Returns the unmodified JSON received from the API
+func (r BatchCancelResultFailed) RawJSON() string { return r.JSON.raw }
 func (r *BatchCancelResultFailed) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
@@ -290,12 +302,12 @@ type BatchCancelResultFailedOrder struct {
 		Uuid        respjson.Field
 		Identifier  respjson.Field
 		ExtraFields map[string]respjson.Field
-		Raw         string
+		raw         string
 	} `json:"-"`
 }
 
-// RawJSON returns the unmodified JSON received from the API.
-func (r BatchCancelResultFailedOrder) RawJSON() string { return r.JSON.Raw }
+// Returns the unmodified JSON received from the API
+func (r BatchCancelResultFailedOrder) RawJSON() string { return r.JSON.raw }
 func (r *BatchCancelResultFailedOrder) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
@@ -311,12 +323,12 @@ type BatchCancelResultSuccess struct {
 		Count       respjson.Field
 		Orders      respjson.Field
 		ExtraFields map[string]respjson.Field
-		Raw         string
+		raw         string
 	} `json:"-"`
 }
 
-// RawJSON returns the unmodified JSON received from the API.
-func (r BatchCancelResultSuccess) RawJSON() string { return r.JSON.Raw }
+// Returns the unmodified JSON received from the API
+func (r BatchCancelResultSuccess) RawJSON() string { return r.JSON.raw }
 func (r *BatchCancelResultSuccess) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
@@ -336,12 +348,12 @@ type BatchCancelResultSuccessOrder struct {
 		Uuid        respjson.Field
 		Identifier  respjson.Field
 		ExtraFields map[string]respjson.Field
-		Raw         string
+		raw         string
 	} `json:"-"`
 }
 
-// RawJSON returns the unmodified JSON received from the API.
-func (r BatchCancelResultSuccessOrder) RawJSON() string { return r.JSON.Raw }
+// Returns the unmodified JSON received from the API
+func (r BatchCancelResultSuccessOrder) RawJSON() string { return r.JSON.raw }
 func (r *BatchCancelResultSuccessOrder) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
@@ -474,12 +486,12 @@ type Order struct {
 		Trades          respjson.Field
 		Volume          respjson.Field
 		ExtraFields     map[string]respjson.Field
-		Raw             string
+		raw             string
 	} `json:"-"`
 }
 
-// RawJSON returns the unmodified JSON received from the API.
-func (r Order) RawJSON() string { return r.JSON.Raw }
+// Returns the unmodified JSON received from the API
+func (r Order) RawJSON() string { return r.JSON.raw }
 func (r *Order) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
@@ -563,12 +575,12 @@ type OrderTrade struct {
 		Uuid        respjson.Field
 		Volume      respjson.Field
 		ExtraFields map[string]respjson.Field
-		Raw         string
+		raw         string
 	} `json:"-"`
 }
 
-// RawJSON returns the unmodified JSON received from the API.
-func (r OrderTrade) RawJSON() string { return r.JSON.Raw }
+// Returns the unmodified JSON received from the API
+func (r OrderTrade) RawJSON() string { return r.JSON.raw }
 func (r *OrderTrade) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
@@ -617,13 +629,13 @@ type OrderCancelAndNewResponse struct {
 		NewOrderUuid       respjson.Field
 		NewOrderIdentifier respjson.Field
 		ExtraFields        map[string]respjson.Field
-		Raw                string
+		raw                string
 	} `json:"-"`
 	Order
 }
 
-// RawJSON returns the unmodified JSON received from the API.
-func (r OrderCancelAndNewResponse) RawJSON() string { return r.JSON.Raw }
+// Returns the unmodified JSON received from the API
+func (r OrderCancelAndNewResponse) RawJSON() string { return r.JSON.raw }
 func (r *OrderCancelAndNewResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
@@ -652,12 +664,12 @@ type OrderGetChanceResponse struct {
 		MakerBidFee respjson.Field
 		Market      respjson.Field
 		ExtraFields map[string]respjson.Field
-		Raw         string
+		raw         string
 	} `json:"-"`
 }
 
-// RawJSON returns the unmodified JSON received from the API.
-func (r OrderGetChanceResponse) RawJSON() string { return r.JSON.Raw }
+// Returns the unmodified JSON received from the API
+func (r OrderGetChanceResponse) RawJSON() string { return r.JSON.raw }
 func (r *OrderGetChanceResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
@@ -685,12 +697,12 @@ type OrderGetChanceResponseAskAccount struct {
 		Locked              respjson.Field
 		UnitCurrency        respjson.Field
 		ExtraFields         map[string]respjson.Field
-		Raw                 string
+		raw                 string
 	} `json:"-"`
 }
 
-// RawJSON returns the unmodified JSON received from the API.
-func (r OrderGetChanceResponseAskAccount) RawJSON() string { return r.JSON.Raw }
+// Returns the unmodified JSON received from the API
+func (r OrderGetChanceResponseAskAccount) RawJSON() string { return r.JSON.raw }
 func (r *OrderGetChanceResponseAskAccount) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
@@ -718,12 +730,12 @@ type OrderGetChanceResponseBidAccount struct {
 		Locked              respjson.Field
 		UnitCurrency        respjson.Field
 		ExtraFields         map[string]respjson.Field
-		Raw                 string
+		raw                 string
 	} `json:"-"`
 }
 
-// RawJSON returns the unmodified JSON received from the API.
-func (r OrderGetChanceResponseBidAccount) RawJSON() string { return r.JSON.Raw }
+// Returns the unmodified JSON received from the API
+func (r OrderGetChanceResponseBidAccount) RawJSON() string { return r.JSON.raw }
 func (r *OrderGetChanceResponseBidAccount) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
@@ -765,12 +777,12 @@ type OrderGetChanceResponseMarket struct {
 		OrderSides  respjson.Field
 		State       respjson.Field
 		ExtraFields map[string]respjson.Field
-		Raw         string
+		raw         string
 	} `json:"-"`
 }
 
-// RawJSON returns the unmodified JSON received from the API.
-func (r OrderGetChanceResponseMarket) RawJSON() string { return r.JSON.Raw }
+// Returns the unmodified JSON received from the API
+func (r OrderGetChanceResponseMarket) RawJSON() string { return r.JSON.raw }
 func (r *OrderGetChanceResponseMarket) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
@@ -788,12 +800,12 @@ type OrderGetChanceResponseMarketAsk struct {
 		Currency    respjson.Field
 		MinTotal    respjson.Field
 		ExtraFields map[string]respjson.Field
-		Raw         string
+		raw         string
 	} `json:"-"`
 }
 
-// RawJSON returns the unmodified JSON received from the API.
-func (r OrderGetChanceResponseMarketAsk) RawJSON() string { return r.JSON.Raw }
+// Returns the unmodified JSON received from the API
+func (r OrderGetChanceResponseMarketAsk) RawJSON() string { return r.JSON.raw }
 func (r *OrderGetChanceResponseMarketAsk) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
@@ -809,12 +821,12 @@ type OrderGetChanceResponseMarketBid struct {
 		Currency    respjson.Field
 		MinTotal    respjson.Field
 		ExtraFields map[string]respjson.Field
-		Raw         string
+		raw         string
 	} `json:"-"`
 }
 
-// RawJSON returns the unmodified JSON received from the API.
-func (r OrderGetChanceResponseMarketBid) RawJSON() string { return r.JSON.Raw }
+// Returns the unmodified JSON received from the API
+func (r OrderGetChanceResponseMarketBid) RawJSON() string { return r.JSON.raw }
 func (r *OrderGetChanceResponseMarketBid) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }

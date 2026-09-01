@@ -39,6 +39,8 @@ func NewTradingPairService(opts ...option.RequestOption) (r TradingPairService) 
 //
 // - docs(kr): https://docs.upbit.com/kr/reference/list-trading-pairs
 // - docs(global): https://global-docs.upbit.com/reference/list-trading-pairs
+//
+// Retrieves the list of all trading pairs supported by Upbit.
 func (r *TradingPairService) List(ctx context.Context, query TradingPairListParams, opts ...option.RequestOption) (res *[]TradingPairListResponse, err error) {
 	var preClientOpts = []option.RequestOption{requestconfig.WithSecurity(requestconfig.Security{})}
 	opts = slices.Concat(preClientOpts, r.options, opts)
@@ -70,12 +72,12 @@ type TradingPairListResponse struct {
 		MarketEvent   respjson.Field
 		MarketWarning respjson.Field
 		ExtraFields   map[string]respjson.Field
-		Raw           string
+		raw           string
 	} `json:"-"`
 }
 
-// RawJSON returns the unmodified JSON received from the API.
-func (r TradingPairListResponse) RawJSON() string { return r.JSON.Raw }
+// Returns the unmodified JSON received from the API
+func (r TradingPairListResponse) RawJSON() string { return r.JSON.raw }
 func (r *TradingPairListResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
@@ -92,12 +94,12 @@ type TradingPairListResponseMarketEvent struct {
 		Caution     respjson.Field
 		Warning     respjson.Field
 		ExtraFields map[string]respjson.Field
-		Raw         string
+		raw         string
 	} `json:"-"`
 }
 
-// RawJSON returns the unmodified JSON received from the API.
-func (r TradingPairListResponseMarketEvent) RawJSON() string { return r.JSON.Raw }
+// Returns the unmodified JSON received from the API
+func (r TradingPairListResponseMarketEvent) RawJSON() string { return r.JSON.raw }
 func (r *TradingPairListResponseMarketEvent) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
@@ -123,12 +125,12 @@ type TradingPairListResponseMarketEventCaution struct {
 		PriceFluctuations            respjson.Field
 		TradingVolumeSoaring         respjson.Field
 		ExtraFields                  map[string]respjson.Field
-		Raw                          string
+		raw                          string
 	} `json:"-"`
 }
 
-// RawJSON returns the unmodified JSON received from the API.
-func (r TradingPairListResponseMarketEventCaution) RawJSON() string { return r.JSON.Raw }
+// Returns the unmodified JSON received from the API
+func (r TradingPairListResponseMarketEventCaution) RawJSON() string { return r.JSON.raw }
 func (r *TradingPairListResponseMarketEventCaution) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }

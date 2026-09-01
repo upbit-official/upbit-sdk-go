@@ -40,6 +40,8 @@ func NewCandleService(opts ...option.RequestOption) (r CandleService) {
 //
 // - docs(kr): https://docs.upbit.com/kr/reference/list-candles-days
 // - docs(global): https://global-docs.upbit.com/reference/list-candles-days
+//
+// Retrieves the list of candles per day.
 func (r *CandleService) ListDays(ctx context.Context, query CandleListDaysParams, opts ...option.RequestOption) (res *[]CandleListDaysResponse, err error) {
 	var preClientOpts = []option.RequestOption{requestconfig.WithSecurity(requestconfig.Security{})}
 	opts = slices.Concat(preClientOpts, r.options, opts)
@@ -54,7 +56,9 @@ func (r *CandleService) ListDays(ctx context.Context, query CandleListDaysParams
 //
 // - docs(kr): https://docs.upbit.com/kr/reference/list-candles-minutes
 // - docs(global): https://global-docs.upbit.com/reference/list-candles-minutes
-func (r *CandleService) ListMinutes(ctx context.Context, unit int64, query CandleListMinutesParams, opts ...option.RequestOption) (res *[]Candle, err error) {
+//
+// Retrieves the list of candles per minute.
+func (r *CandleService) ListMinutes(ctx context.Context, unit int64, query CandleListMinutesParams, opts ...option.RequestOption) (res *[]CandleListMinutesResponse, err error) {
 	var preClientOpts = []option.RequestOption{requestconfig.WithSecurity(requestconfig.Security{})}
 	opts = slices.Concat(preClientOpts, r.options, opts)
 	path := fmt.Sprintf("v1/candles/minutes/%v", unit)
@@ -68,6 +72,8 @@ func (r *CandleService) ListMinutes(ctx context.Context, unit int64, query Candl
 //
 // - docs(kr): https://docs.upbit.com/kr/reference/list-candles-months
 // - docs(global): https://global-docs.upbit.com/reference/list-candles-months
+//
+// Retrieves the list of candles per month.
 func (r *CandleService) ListMonths(ctx context.Context, query CandleListMonthsParams, opts ...option.RequestOption) (res *[]CandlePeriod, err error) {
 	var preClientOpts = []option.RequestOption{requestconfig.WithSecurity(requestconfig.Security{})}
 	opts = slices.Concat(preClientOpts, r.options, opts)
@@ -82,6 +88,8 @@ func (r *CandleService) ListMonths(ctx context.Context, query CandleListMonthsPa
 //
 // - docs(kr): https://docs.upbit.com/kr/reference/list-candles-seconds
 // - docs(global): https://global-docs.upbit.com/reference/list-candles-seconds
+//
+// Retrieves the list of candles per second.
 func (r *CandleService) ListSeconds(ctx context.Context, query CandleListSecondsParams, opts ...option.RequestOption) (res *[]Candle, err error) {
 	var preClientOpts = []option.RequestOption{requestconfig.WithSecurity(requestconfig.Security{})}
 	opts = slices.Concat(preClientOpts, r.options, opts)
@@ -96,6 +104,8 @@ func (r *CandleService) ListSeconds(ctx context.Context, query CandleListSeconds
 //
 // - docs(kr): https://docs.upbit.com/kr/reference/list-candles-weeks
 // - docs(global): https://global-docs.upbit.com/reference/list-candles-weeks
+//
+// Retrieves the list of candles per week.
 func (r *CandleService) ListWeeks(ctx context.Context, query CandleListWeeksParams, opts ...option.RequestOption) (res *[]CandlePeriod, err error) {
 	var preClientOpts = []option.RequestOption{requestconfig.WithSecurity(requestconfig.Security{})}
 	opts = slices.Concat(preClientOpts, r.options, opts)
@@ -110,6 +120,8 @@ func (r *CandleService) ListWeeks(ctx context.Context, query CandleListWeeksPara
 //
 // - docs(kr): https://docs.upbit.com/kr/reference/list-candles-years
 // - docs(global): https://global-docs.upbit.com/reference/list-candles-years
+//
+// Retrieves the list of candles per year.
 func (r *CandleService) ListYears(ctx context.Context, query CandleListYearsParams, opts ...option.RequestOption) (res *[]CandlePeriod, err error) {
 	var preClientOpts = []option.RequestOption{requestconfig.WithSecurity(requestconfig.Security{})}
 	opts = slices.Concat(preClientOpts, r.options, opts)
@@ -162,12 +174,12 @@ type Candle struct {
 		Timestamp            respjson.Field
 		TradePrice           respjson.Field
 		ExtraFields          map[string]respjson.Field
-		Raw                  string
+		raw                  string
 	} `json:"-"`
 }
 
-// RawJSON returns the unmodified JSON received from the API.
-func (r Candle) RawJSON() string { return r.JSON.Raw }
+// Returns the unmodified JSON received from the API
+func (r Candle) RawJSON() string { return r.JSON.raw }
 func (r *Candle) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
@@ -179,13 +191,13 @@ type CandlePeriod struct {
 	JSON struct {
 		FirstDayOfPeriod respjson.Field
 		ExtraFields      map[string]respjson.Field
-		Raw              string
+		raw              string
 	} `json:"-"`
 	Candle
 }
 
-// RawJSON returns the unmodified JSON received from the API.
-func (r CandlePeriod) RawJSON() string { return r.JSON.Raw }
+// Returns the unmodified JSON received from the API
+func (r CandlePeriod) RawJSON() string { return r.JSON.raw }
 func (r *CandlePeriod) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
@@ -207,14 +219,34 @@ type CandleListDaysResponse struct {
 		PrevClosingPrice    respjson.Field
 		ConvertedTradePrice respjson.Field
 		ExtraFields         map[string]respjson.Field
-		Raw                 string
+		raw                 string
 	} `json:"-"`
 	Candle
 }
 
-// RawJSON returns the unmodified JSON received from the API.
-func (r CandleListDaysResponse) RawJSON() string { return r.JSON.Raw }
+// Returns the unmodified JSON received from the API
+func (r CandleListDaysResponse) RawJSON() string { return r.JSON.raw }
 func (r *CandleListDaysResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type CandleListMinutesResponse struct {
+	// Candle unit in minutes.
+	//
+	// Any of 1, 3, 5, 10, 15, 30, 60, 240.
+	Unit int64 `json:"unit" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Unit        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+	Candle
+}
+
+// Returns the unmodified JSON received from the API
+func (r CandleListMinutesResponse) RawJSON() string { return r.JSON.raw }
+func (r *CandleListMinutesResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

@@ -36,6 +36,8 @@ func NewWalletStatusService(opts ...option.RequestOption) (r WalletStatusService
 //
 // - docs(kr): https://docs.upbit.com/kr/reference/get-service-status
 // - docs(global): https://global-docs.upbit.com/reference/get-service-status
+//
+// Retrieves deposit and withdrawal service status for all currencies.
 func (r *WalletStatusService) List(ctx context.Context, opts ...option.RequestOption) (res *[]WalletStatusListResponse, err error) {
 	opts = slices.Concat(r.options, opts)
 	path := "v1/status/wallet"
@@ -94,12 +96,12 @@ type WalletStatusListResponse struct {
 		BlockState          respjson.Field
 		BlockUpdatedAt      respjson.Field
 		ExtraFields         map[string]respjson.Field
-		Raw                 string
+		raw                 string
 	} `json:"-"`
 }
 
-// RawJSON returns the unmodified JSON received from the API.
-func (r WalletStatusListResponse) RawJSON() string { return r.JSON.Raw }
+// Returns the unmodified JSON received from the API
+func (r WalletStatusListResponse) RawJSON() string { return r.JSON.raw }
 func (r *WalletStatusListResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }

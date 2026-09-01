@@ -39,6 +39,8 @@ func NewOrderbookService(opts ...option.RequestOption) (r OrderbookService) {
 //
 // - docs(kr): https://docs.upbit.com/kr/reference/list-orderbooks
 // - docs(global): https://global-docs.upbit.com/reference/list-orderbooks
+//
+// Retrieves the real-time orderbook data for the specified markets.
 func (r *OrderbookService) List(ctx context.Context, query OrderbookListParams, opts ...option.RequestOption) (res *[]OrderbookListResponse, err error) {
 	var preClientOpts = []option.RequestOption{requestconfig.WithSecurity(requestconfig.Security{})}
 	opts = slices.Concat(preClientOpts, r.options, opts)
@@ -54,6 +56,8 @@ func (r *OrderbookService) List(ctx context.Context, query OrderbookListParams, 
 //   - docs(kr): https://docs.upbit.com/kr/reference/list-orderbook-instruments
 //   - docs(global):
 //     https://global-docs.upbit.com/reference/list-orderbook-instruments
+//
+// Retrieves the tick size (order price unit) for the specified trading pairs.
 func (r *OrderbookService) ListInstruments(ctx context.Context, query OrderbookListInstrumentsParams, opts ...option.RequestOption) (res *[]OrderbookListInstrumentsResponse, err error) {
 	var preClientOpts = []option.RequestOption{requestconfig.WithSecurity(requestconfig.Security{})}
 	opts = slices.Concat(preClientOpts, r.options, opts)
@@ -84,12 +88,12 @@ type OrderbookListResponse struct {
 		TotalAskSize   respjson.Field
 		TotalBidSize   respjson.Field
 		ExtraFields    map[string]respjson.Field
-		Raw            string
+		raw            string
 	} `json:"-"`
 }
 
-// RawJSON returns the unmodified JSON received from the API.
-func (r OrderbookListResponse) RawJSON() string { return r.JSON.Raw }
+// Returns the unmodified JSON received from the API
+func (r OrderbookListResponse) RawJSON() string { return r.JSON.raw }
 func (r *OrderbookListResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
@@ -111,12 +115,12 @@ type OrderbookListResponseOrderbookUnit struct {
 		BidPrice    respjson.Field
 		BidSize     respjson.Field
 		ExtraFields map[string]respjson.Field
-		Raw         string
+		raw         string
 	} `json:"-"`
 }
 
-// RawJSON returns the unmodified JSON received from the API.
-func (r OrderbookListResponseOrderbookUnit) RawJSON() string { return r.JSON.Raw }
+// Returns the unmodified JSON received from the API
+func (r OrderbookListResponseOrderbookUnit) RawJSON() string { return r.JSON.raw }
 func (r *OrderbookListResponseOrderbookUnit) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
@@ -140,12 +144,12 @@ type OrderbookListInstrumentsResponse struct {
 		SupportedLevels respjson.Field
 		TickSize        respjson.Field
 		ExtraFields     map[string]respjson.Field
-		Raw             string
+		raw             string
 	} `json:"-"`
 }
 
-// RawJSON returns the unmodified JSON received from the API.
-func (r OrderbookListInstrumentsResponse) RawJSON() string { return r.JSON.Raw }
+// Returns the unmodified JSON received from the API
+func (r OrderbookListInstrumentsResponse) RawJSON() string { return r.JSON.raw }
 func (r *OrderbookListInstrumentsResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }

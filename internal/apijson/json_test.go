@@ -88,7 +88,7 @@ type EmbeddedStructJSON struct {
 	A           Field
 	B           Field
 	ExtraFields map[string]Field
-	Raw         string
+	raw         string
 }
 
 type EmbeddedStructs struct {
@@ -102,7 +102,7 @@ type EmbeddedStructs struct {
 type EmbeddedStructsJSON struct {
 	A           Field
 	ExtraFields map[string]Field
-	Raw         string
+	raw         string
 }
 
 type Recursive struct {
@@ -125,7 +125,7 @@ type JSONFieldStructJSON struct {
 	C           Field
 	D           Field
 	ExtraFields map[string]Field
-	Raw         string
+	raw         string
 }
 
 type UnknownStruct struct {
@@ -152,7 +152,7 @@ type InlineArray struct {
 
 type InlineJSON struct {
 	InlineField Field
-	Raw         string
+	raw         string
 }
 
 type UnionInteger int64
@@ -468,7 +468,7 @@ var tests = map[string]struct {
 				JSON: EmbeddedStructJSON{
 					A:   Field{raw: `1`, status: valid},
 					B:   Field{raw: `"bar"`, status: valid},
-					Raw: `{"a":1,"b":"bar"}`,
+					raw: `{"a":1,"b":"bar"}`,
 				},
 			},
 			A:           P(1),
@@ -478,7 +478,7 @@ var tests = map[string]struct {
 				ExtraFields: map[string]Field{
 					"b": {raw: `"bar"`, status: valid},
 				},
-				Raw: `{"a":1,"b":"bar"}`,
+				raw: `{"a":1,"b":"bar"}`,
 			},
 		},
 	},
@@ -495,7 +495,7 @@ var tests = map[string]struct {
 			B: 12,
 			C: "",
 			JSON: JSONFieldStructJSON{
-				Raw: `{"a":"12","b":"12","c":null,"extra_typed":12,"extra_untyped":{"foo":"bar"}}`,
+				raw: `{"a":"12","b":"12","c":null,"extra_typed":12,"extra_untyped":{"foo":"bar"}}`,
 				A:   Field{raw: `"12"`, status: invalid},
 				B:   Field{raw: `"12"`, status: valid},
 				C:   Field{raw: "null", status: null},
@@ -619,7 +619,7 @@ var tests = map[string]struct {
 			InlineField: Primitives{A: false, B: 237628372683, C: 0x28e, D: 9999.43, E: 43.76, F: []int{1, 2, 3, 4}},
 			JSON: InlineJSON{
 				InlineField: Field{raw: "{\"a\":false,\"b\":237628372683,\"c\":654,\"d\":9999.43,\"e\":43.76,\"f\":[1,2,3,4]}", status: 3},
-				Raw:         "{\"a\":false,\"b\":237628372683,\"c\":654,\"d\":9999.43,\"e\":43.76,\"f\":[1,2,3,4]}",
+				raw:         "{\"a\":false,\"b\":237628372683,\"c\":654,\"d\":9999.43,\"e\":43.76,\"f\":[1,2,3,4]}",
 			},
 		},
 	},
@@ -630,7 +630,7 @@ var tests = map[string]struct {
 			InlineField: []string{"Hello", "foo", "bar"},
 			JSON: InlineJSON{
 				InlineField: Field{raw: `["Hello","foo","bar"]`, status: 3},
-				Raw:         `["Hello","foo","bar"]`,
+				raw:         `["Hello","foo","bar"]`,
 			},
 		},
 	},

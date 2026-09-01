@@ -13,3 +13,8 @@ go build $packages
 
 echo "==> Checking tests compile"
 go test -run=^$ $packages
+
+echo "==> Checking examples compile"
+while IFS= read -r -d '' file; do
+	go test -run=^$ "$file"
+done < <(find examples -type f -name '*.go' ! -name '*_test.go' -print0)

@@ -12,7 +12,7 @@ type StructWithNullExtraField struct {
 	JSON    struct {
 		Results     respjson.Field
 		ExtraFields map[string]respjson.Field
-		Raw         string
+		raw         string
 	} `json:"-"`
 }
 

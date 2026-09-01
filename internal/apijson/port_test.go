@@ -29,10 +29,10 @@ type cardJSON struct {
 	Metadata    Field
 	Value       Field
 	ExtraFields map[string]Field
-	Raw         string
+	raw         string
 }
 
-func (r cardJSON) RawJSON() string { return r.Raw }
+func (r cardJSON) RawJSON() string { return r.raw }
 
 type CardProcessor string
 
@@ -54,10 +54,10 @@ type cardVisaJSON struct {
 	Metadata    Field
 	Value       Field
 	ExtraFields map[string]Field
-	Raw         string
+	raw         string
 }
 
-func (r cardVisaJSON) RawJSON() string { return r.Raw }
+func (r cardVisaJSON) RawJSON() string { return r.raw }
 
 type CardVisaProcessor string
 
@@ -83,10 +83,10 @@ type cardMastercardJSON struct {
 	Metadata    Field
 	Value       Field
 	ExtraFields map[string]Field
-	Raw         string
+	raw         string
 }
 
-func (r cardMastercardJSON) RawJSON() string { return r.Raw }
+func (r cardMastercardJSON) RawJSON() string { return r.raw }
 
 type CardMastercardProcessor string
 
@@ -105,7 +105,7 @@ type commonFieldsJSON struct {
 	Metadata    Field
 	Value       Field
 	ExtraFields map[string]Field
-	Raw         string
+	raw         string
 }
 
 type CardEmbedded struct {
@@ -122,10 +122,10 @@ type cardEmbeddedJSON struct {
 	Data        Field
 	IsFoo       Field
 	ExtraFields map[string]Field
-	Raw         string
+	raw         string
 }
 
-func (r cardEmbeddedJSON) RawJSON() string { return r.Raw }
+func (r cardEmbeddedJSON) RawJSON() string { return r.raw }
 
 var portTests = map[string]struct {
 	from any
@@ -143,7 +143,7 @@ var portTests = map[string]struct {
 			},
 			Value: "value",
 			JSON: cardVisaJSON{
-				Raw:         `{"processor":"visa","is_foo":true,"data":{"foo":"foo"}}`,
+				raw:         `{"processor":"visa","is_foo":true,"data":{"foo":"foo"}}`,
 				Processor:   Field{raw: `"visa"`, status: valid},
 				IsFoo:       Field{raw: `true`, status: valid},
 				Data:        Field{raw: `{"foo":"foo"}`, status: valid},
@@ -163,7 +163,7 @@ var portTests = map[string]struct {
 			},
 			Value: "value",
 			JSON: cardJSON{
-				Raw:         `{"processor":"visa","is_foo":true,"data":{"foo":"foo"}}`,
+				raw:         `{"processor":"visa","is_foo":true,"data":{"foo":"foo"}}`,
 				Processor:   Field{raw: `"visa"`, status: valid},
 				IsFoo:       Field{raw: `true`, status: valid},
 				Data:        Field{raw: `{"foo":"foo"}`, status: valid},
@@ -201,7 +201,7 @@ var portTests = map[string]struct {
 				JSON: commonFieldsJSON{
 					Metadata: Field{raw: `{"created_at":"Mar 29 2024"}`, status: valid},
 					Value:    Field{raw: `"embedded_value"`, status: valid},
-					Raw:      `should not matter`,
+					raw:      `should not matter`,
 				},
 			},
 			Processor: "visa",
@@ -210,7 +210,7 @@ var portTests = map[string]struct {
 				Foo: "embedded_foo",
 			},
 			JSON: cardEmbeddedJSON{
-				Raw:       `{"processor":"visa","is_foo":true,"data":{"foo":"embedded_foo"},"metadata":{"created_at":"Mar 29 2024"},"value":"embedded_value"}`,
+				raw:       `{"processor":"visa","is_foo":true,"data":{"foo":"embedded_foo"},"metadata":{"created_at":"Mar 29 2024"},"value":"embedded_value"}`,
 				Processor: Field{raw: `"visa"`, status: valid},
 				IsFoo:     Field{raw: `true`, status: valid},
 				Data:      Field{raw: `{"foo":"embedded_foo"}`, status: valid},
@@ -228,7 +228,7 @@ var portTests = map[string]struct {
 			},
 			Value: "embedded_value",
 			JSON: cardJSON{
-				Raw:       `{"processor":"visa","is_foo":true,"data":{"foo":"embedded_foo"},"metadata":{"created_at":"Mar 29 2024"},"value":"embedded_value"}`,
+				raw:       `{"processor":"visa","is_foo":true,"data":{"foo":"embedded_foo"},"metadata":{"created_at":"Mar 29 2024"},"value":"embedded_value"}`,
 				Processor: Field{raw: `"visa"`, status: 0x3},
 				IsFoo:     Field{raw: "true", status: 0x3},
 				Data:      Field{raw: `{"foo":"embedded_foo"}`, status: 0x3},

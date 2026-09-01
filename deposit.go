@@ -41,6 +41,9 @@ func NewDepositService(opts ...option.RequestOption) (r DepositService) {
 //
 // - docs(kr): https://docs.upbit.com/kr/reference/get-deposit
 // - docs(global): https://global-docs.upbit.com/reference/get-deposit
+//
+// Retrieves the latest deposit history. To query specific deposit information, you
+// can specify the deposit’s UUID, transaction ID (TXID), or currency code.
 func (r *DepositService) Get(ctx context.Context, query DepositGetParams, opts ...option.RequestOption) (res *Deposit, err error) {
 	opts = slices.Concat(r.options, opts)
 	path := "v1/deposit"
@@ -54,6 +57,8 @@ func (r *DepositService) Get(ctx context.Context, query DepositGetParams, opts .
 //
 // - docs(kr): https://docs.upbit.com/kr/reference/list-deposits
 // - docs(global): https://global-docs.upbit.com/reference/list-deposits
+//
+// Retrieves the latest deposit list.
 func (r *DepositService) List(ctx context.Context, query DepositListParams, opts ...option.RequestOption) (res *pagination.UuidCursorIDPage[Deposit], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.options, opts)
@@ -77,6 +82,8 @@ func (r *DepositService) List(ctx context.Context, query DepositListParams, opts
 //
 // - docs(kr): https://docs.upbit.com/kr/reference/list-deposits
 // - docs(global): https://global-docs.upbit.com/reference/list-deposits
+//
+// Retrieves the latest deposit list.
 func (r *DepositService) ListAutoPaging(ctx context.Context, query DepositListParams, opts ...option.RequestOption) *pagination.UuidCursorIDPageAutoPager[Deposit] {
 	return pagination.NewUuidCursorIDPageAutoPager(r.List(ctx, query, opts...))
 }
@@ -87,6 +94,9 @@ func (r *DepositService) ListAutoPaging(ctx context.Context, query DepositListPa
 //
 // - docs(kr): https://docs.upbit.com/kr/reference/create-deposit-address
 // - docs(global): https://global-docs.upbit.com/reference/create-deposit-address
+//
+// Requests the creation of a deposit address for depositing assets from a personal
+// wallet or another exchange into Upbit.
 func (r *DepositService) NewCoinAddress(ctx context.Context, body DepositNewCoinAddressParams, opts ...option.RequestOption) (res *DepositNewCoinAddressResponseUnion, err error) {
 	opts = slices.Concat(r.options, opts)
 	path := "v1/deposits/generate_coin_address"
@@ -99,7 +109,9 @@ func (r *DepositService) NewCoinAddress(ctx context.Context, body DepositNewCoin
 // POST /v1/deposits/krw
 //
 // - docs(kr): https://docs.upbit.com/kr/reference/deposit-krw
-// - docs(global): https://global-docs.upbit.com/reference/deposit-krw
+// - Supported only in Korea.
+//
+// 입출금 계좌로부터 원화를 지정한 금액만큼 입금합니다.
 func (r *DepositService) DepositKrw(ctx context.Context, body DepositDepositKrwParams, opts ...option.RequestOption) (res *Deposit, err error) {
 	opts = slices.Concat(r.options, opts)
 	path := "v1/deposits/krw"
@@ -113,6 +125,9 @@ func (r *DepositService) DepositKrw(ctx context.Context, body DepositDepositKrwP
 //
 // - docs(kr): https://docs.upbit.com/kr/reference/list-deposit-addresses
 // - docs(global): https://global-docs.upbit.com/reference/list-deposit-addresses
+//
+// Retrieves deposit address information for the specified currency. Return all
+// successfully generated deposit addresses.
 func (r *DepositService) ListCoinAddresses(ctx context.Context, opts ...option.RequestOption) (res *[]DepositAddress, err error) {
 	opts = slices.Concat(r.options, opts)
 	path := "v1/deposits/coin_addresses"
@@ -127,6 +142,8 @@ func (r *DepositService) ListCoinAddresses(ctx context.Context, opts ...option.R
 //   - docs(kr): https://docs.upbit.com/kr/reference/available-deposit-information
 //   - docs(global):
 //     https://global-docs.upbit.com/reference/available-deposit-information
+//
+// Deposits availability information for the specified currency is retrieved.
 func (r *DepositService) GetChance(ctx context.Context, query DepositGetChanceParams, opts ...option.RequestOption) (res *DepositGetChanceResponse, err error) {
 	opts = slices.Concat(r.options, opts)
 	path := "v1/deposits/chance/coin"
@@ -140,6 +157,8 @@ func (r *DepositService) GetChance(ctx context.Context, query DepositGetChancePa
 //
 // - docs(kr): https://docs.upbit.com/kr/reference/get-deposit-address
 // - docs(global): https://global-docs.upbit.com/reference/get-deposit-address
+//
+// Retrieves deposit address information for the specified currency.
 func (r *DepositService) GetCoinAddress(ctx context.Context, query DepositGetCoinAddressParams, opts ...option.RequestOption) (res *DepositAddress, err error) {
 	opts = slices.Concat(r.options, opts)
 	path := "v1/deposits/coin_address"
@@ -207,12 +226,12 @@ type Deposit struct {
 		Uuid            respjson.Field
 		NetType         respjson.Field
 		ExtraFields     map[string]respjson.Field
-		Raw             string
+		raw             string
 	} `json:"-"`
 }
 
-// RawJSON returns the unmodified JSON received from the API.
-func (r Deposit) RawJSON() string { return r.JSON.Raw }
+// Returns the unmodified JSON received from the API
+func (r Deposit) RawJSON() string { return r.JSON.raw }
 func (r *Deposit) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
@@ -270,12 +289,12 @@ type DepositAddress struct {
 		NetType          respjson.Field
 		SecondaryAddress respjson.Field
 		ExtraFields      map[string]respjson.Field
-		Raw              string
+		raw              string
 	} `json:"-"`
 }
 
-// RawJSON returns the unmodified JSON received from the API.
-func (r DepositAddress) RawJSON() string { return r.JSON.Raw }
+// Returns the unmodified JSON received from the API
+func (r DepositAddress) RawJSON() string { return r.JSON.raw }
 func (r *DepositAddress) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
@@ -307,22 +326,22 @@ type DepositNewCoinAddressResponseUnion struct {
 		SecondaryAddress respjson.Field
 		Message          respjson.Field
 		Success          respjson.Field
-		Raw              string
+		raw              string
 	} `json:"-"`
 }
 
 func (u DepositNewCoinAddressResponseUnion) AsDepositAddress() (v DepositAddress) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.Raw), &v)
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
 func (u DepositNewCoinAddressResponseUnion) AsDepositNewCoinAddressResponseGenerateCoinAddressResponse() (v DepositNewCoinAddressResponseGenerateCoinAddressResponse) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.Raw), &v)
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-// RawJSON returns the unmodified JSON received from the API.
-func (u DepositNewCoinAddressResponseUnion) RawJSON() string { return u.JSON.Raw }
+// Returns the unmodified JSON received from the API
+func (u DepositNewCoinAddressResponseUnion) RawJSON() string { return u.JSON.raw }
 
 func (r *DepositNewCoinAddressResponseUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
@@ -338,12 +357,12 @@ type DepositNewCoinAddressResponseGenerateCoinAddressResponse struct {
 		Message     respjson.Field
 		Success     respjson.Field
 		ExtraFields map[string]respjson.Field
-		Raw         string
+		raw         string
 	} `json:"-"`
 }
 
-// RawJSON returns the unmodified JSON received from the API.
-func (r DepositNewCoinAddressResponseGenerateCoinAddressResponse) RawJSON() string { return r.JSON.Raw }
+// Returns the unmodified JSON received from the API
+func (r DepositNewCoinAddressResponseGenerateCoinAddressResponse) RawJSON() string { return r.JSON.raw }
 func (r *DepositNewCoinAddressResponseGenerateCoinAddressResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
@@ -380,12 +399,12 @@ type DepositGetChanceResponse struct {
 		MinimumDepositConfirmations respjson.Field
 		NetType                     respjson.Field
 		ExtraFields                 map[string]respjson.Field
-		Raw                         string
+		raw                         string
 	} `json:"-"`
 }
 
-// RawJSON returns the unmodified JSON received from the API.
-func (r DepositGetChanceResponse) RawJSON() string { return r.JSON.Raw }
+// Returns the unmodified JSON received from the API
+func (r DepositGetChanceResponse) RawJSON() string { return r.JSON.raw }
 func (r *DepositGetChanceResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }

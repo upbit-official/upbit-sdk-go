@@ -38,6 +38,9 @@ func NewTickerService(opts ...option.RequestOption) (r TickerService) {
 //
 // - docs(kr): https://docs.upbit.com/kr/reference/list-quote-tickers
 // - docs(global): https://global-docs.upbit.com/reference/list-quote-tickers
+//
+// Retrieves current price information of all pairs in the specified market(quote
+// currency).
 func (r *TickerService) ListByQuoteCurrencies(ctx context.Context, query TickerListByQuoteCurrenciesParams, opts ...option.RequestOption) (res *[]Ticker, err error) {
 	var preClientOpts = []option.RequestOption{requestconfig.WithSecurity(requestconfig.Security{})}
 	opts = slices.Concat(preClientOpts, r.options, opts)
@@ -52,6 +55,9 @@ func (r *TickerService) ListByQuoteCurrencies(ctx context.Context, query TickerL
 //
 // - docs(kr): https://docs.upbit.com/kr/reference/list-tickers
 // - docs(global): https://global-docs.upbit.com/reference/list-tickers
+//
+// Retrieves the current price for the specified pair. Returns the ticker snapshot
+// of the pair at the time of the request.
 func (r *TickerService) ListByTradingPairs(ctx context.Context, query TickerListByTradingPairsParams, opts ...option.RequestOption) (res *[]Ticker, err error) {
 	var preClientOpts = []option.RequestOption{requestconfig.WithSecurity(requestconfig.Security{})}
 	opts = slices.Concat(preClientOpts, r.options, opts)
@@ -174,12 +180,12 @@ type Ticker struct {
 		TradeTimestamp     respjson.Field
 		TradeVolume        respjson.Field
 		ExtraFields        map[string]respjson.Field
-		Raw                string
+		raw                string
 	} `json:"-"`
 }
 
-// RawJSON returns the unmodified JSON received from the API.
-func (r Ticker) RawJSON() string { return r.JSON.Raw }
+// Returns the unmodified JSON received from the API
+func (r Ticker) RawJSON() string { return r.JSON.raw }
 func (r *Ticker) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }

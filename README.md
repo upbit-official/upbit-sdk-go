@@ -1,6 +1,6 @@
-English | [한국어](./README_KR.md)
+# Upbit SDK for Go
 
-# Upbit Go API Library
+English | [한국어](./README_KR.md)
 
 <!-- x-release-please-start-version -->
 
@@ -8,8 +8,8 @@ English | [한국어](./README_KR.md)
 
 <!-- x-release-please-end -->
 
-The Upbit Go library provides convenient access to the [Upbit REST API](https://docs.upbit.com)
-from applications written in Go. The library includes type definitions for all request params and response fields.
+The Upbit SDK for Go is designed to make it easy to use the Upbit REST API in Go 1.25+.
+It includes type definitions for all request parameters and response fields. For the complete SDK API reference, see [api.md](api.md).
 
 ## Installation
 
@@ -28,18 +28,14 @@ Or to pin the version:
 <!-- x-release-please-start-version -->
 
 ```sh
-go get -u 'github.com/upbit-official/upbit-sdk-go@v0.9.0'
+go get -u 'github.com/upbit-official/upbit-sdk-go@v1.0.0'
 ```
 
 <!-- x-release-please-end -->
 
-## Requirements
-
-This library requires Go 1.25+.
-
 ## Usage
 
-The full API of this library can be found in [api.md](api.md).
+The full API of this SDK can be found in [api.md](api.md).
 
 ```go
 package main
@@ -69,222 +65,148 @@ func main() {
 
 For more runnable examples, see the scripts in [`examples/`](examples/).
 
-### Request fields
+## Request & Response types
 
-The Upbit library uses the [`omitzero`](https://tip.golang.org/doc/go1.24#encodingjsonpkgencodingjson)
-semantics from the `encoding/json` package for request fields.
-
-Required primitive fields (`int64`, `string`, etc.) feature the tag <code>\`api:"required"\`</code>. These
-fields are always serialized, even their zero values.
-
-Optional primitive types are wrapped in a `param.Opt[T]`. These fields can be set with the provided constructors, `upbit.String(string)`, `upbit.Int(int64)`, etc.
-
-Any `param.Opt[T]`, map, slice, struct or string enum uses the
-tag <code>\`json:"...,omitzero"\`</code>. Its zero value is considered omitted.
-
-The `param.IsOmitted(any)` function can confirm the presence of any `omitzero` field.
+This SDK includes Go types for all documented request params and response fields. You may import and use them like so:
 
 ```go
-p := upbit.ExampleParams{
-	ID:   "id_xxx",            // required property
-	Name: upbit.String("..."), // optional property
+params := upbit.CandleListDaysParams{
+	Market: "KRW-BTC",
+	Count:  upbit.Int(10),
+	To:     upbit.String("2024-01-01T00:00:00"),
+}
 
-	Point: upbit.Point{
-		X: 0,            // required field will serialize as 0
-		Y: upbit.Int(1), // optional field will serialize as 1
-		// ... omitted non-required fields will not be serialized
-	},
+candles, err := client.Candles.ListDays(context.TODO(), params)
+if err != nil {
+	panic(err.Error())
+}
+fmt.Printf("%+v\n", candles)
+```
 
-	Origin: upbit.Origin{}, // the zero value of [Origin] is considered omitted
+Required request fields are ordinary value types and are tagged with <code>`api:"required"`</code>. Optional primitive fields are wrapped in `param.Opt[T]` and can be set with constructors such as `upbit.String(string)`, `upbit.Int(int64)`, `upbit.Bool(bool)`, and `upbit.Float(float64)`. The SDK uses the [`omitzero`](https://tip.golang.org/doc/go1.24#encodingjsonpkgencodingjson) semantics from `encoding/json` for omitted request fields.
+
+Request body params use the same pattern:
+
+```go
+params := upbit.OrderNewParams{
+	Market:  "KRW-BTC",
+	Side:    upbit.SideEnumBid,
+	OrdType: upbit.OrdTypeEnumLimit,
+	Price:   upbit.String("14000000"),
+	Volume:  upbit.String("1"),
+}
+
+order, err := client.Orders.New(context.TODO(), params)
+if err != nil {
+	panic(err.Error())
+}
+fmt.Printf("%+v\n", order)
+```
+
+All fields in response structs are ordinary value types. Each response struct also includes a `JSON` field with metadata for each property. Use `.Valid()` to distinguish an explicit value from `null`, an omitted field, or a value that could not be decoded.
+
+```go
+accounts, err := client.Accounts.List(context.TODO())
+if err != nil {
+	panic(err.Error())
+}
+
+var account upbit.AccountListResponse
+if len(*accounts) > 0 {
+	account = (*accounts)[0]
+}
+
+fmt.Println(account.Currency)
+
+if account.JSON.Balance.Valid() {
+	fmt.Println(account.Balance)
+}
+
+raw := account.RawJSON()
+extra := account.JSON.ExtraFields["new_field"].Raw()
+fmt.Println(raw, extra)
+```
+
+Some responses are unions. For example, a `DepositNewCoinAddressResponseUnion` value returned from `client.Deposits.NewCoinAddress` can be converted to one of its documented variants with the generated `As...` methods.
+
+```go
+result, err := client.Deposits.NewCoinAddress(context.TODO(), params)
+if err != nil {
+	panic(err.Error())
+}
+
+if result.JSON.DepositAddress.Valid() {
+	address := result.AsDepositAddress()
+	fmt.Println(address.DepositAddress)
+} else if result.JSON.Message.Valid() {
+	status := result.AsDepositNewCoinAddressResponseGenerateCoinAddressResponse()
+	fmt.Println(status.Message)
 }
 ```
 
-To send `null` instead of a `param.Opt[T]`, use `param.Null[T]()`.
-To send `null` instead of a struct `T`, use `param.NullStruct[T]()`.
+Documentation for each method, request param, and response field is available in Go doc comments and on [pkg.go.dev](https://pkg.go.dev/github.com/upbit-official/upbit-sdk-go).
+
+## Handling errors
+
+When the API returns a non-success status code, the SDK returns an error of type `*upbit.Error`. This contains the `StatusCode`, `*http.Request`, and `*http.Response` values of the request, as well as the JSON of the error body.
+
+To handle errors, use the `errors.As` pattern:
 
 ```go
-p.Name = param.Null[string]()       // 'null' instead of string
-p.Point = param.NullStruct[Point]() // 'null' instead of struct
-
-param.IsNull(p.Name)  // true
-param.IsNull(p.Point) // true
-```
-
-Request structs contain a `.SetExtraFields(map[string]any)` method which can send non-conforming
-fields in the request body. Extra fields overwrite any struct fields with a matching
-key. For security reasons, only use `SetExtraFields` with trusted data.
-
-To send a custom value instead of a struct, use `param.Override[T](value)`.
-
-```go
-// In cases where the API specifies a given type,
-// but you want to send something else, use [SetExtraFields]:
-p.SetExtraFields(map[string]any{
-	"x": 0.01, // send "x" as a float instead of int
-})
-
-// Send a number instead of an object
-custom := param.Override[upbit.FooParams](12)
-```
-
-### Request unions
-
-Unions are represented as a struct with fields prefixed by "Of" for each of its variants,
-only one field can be non-zero. The non-zero field will be serialized.
-
-Sub-properties of the union can be accessed via methods on the union struct.
-These methods return a mutable pointer to the underlying data, if present.
-
-```go
-// Only one field can be non-zero, use param.IsOmitted() to check if a field is set
-type AnimalUnionParam struct {
-	OfCat *Cat `json:",omitzero,inline"`
-	OfDog *Dog `json:",omitzero,inline"`
-}
-
-animal := AnimalUnionParam{
-	OfCat: &Cat{
-		Name: "Whiskers",
-		Owner: PersonParam{
-			Address: AddressParam{Street: "3333 Coyote Hill Rd", Zip: 0},
-		},
-	},
-}
-
-// Mutating a field
-if address := animal.GetOwner().GetAddress(); address != nil {
-	address.ZipCode = 94304
+_, err := client.Accounts.List(context.TODO())
+if err != nil {
+	var apierr *upbit.Error
+	if errors.As(err, &apierr) {
+		fmt.Println(apierr.StatusCode)
+		fmt.Println(apierr.Name)
+		fmt.Println(apierr.Message)
+		fmt.Println(string(apierr.DumpRequest(true)))
+		fmt.Println(string(apierr.DumpResponse(true)))
+	}
+	panic(err.Error())
 }
 ```
 
-### Response objects
+When other errors occur, they are returned unwrapped. For example, if HTTP transport fails, you might receive `*url.Error` wrapping `*net.OpError`.
 
-All fields in response structs are ordinary value types (not pointers or wrappers).
-Response structs also include a special `JSON` field containing metadata about
-each property.
+## Retries
 
-```go
-type Animal struct {
-	Name   string `json:"name,nullable"`
-	Owners int    `json:"owners"`
-	Age    int    `json:"age"`
-	JSON   struct {
-		Name        respjson.Field
-		Owner       respjson.Field
-		Age         respjson.Field
-		ExtraFields map[string]respjson.Field
-	} `json:"-"`
-}
-```
+Certain errors will be automatically retried 2 times by default, with a short exponential backoff.
+We retry by default all connection errors, 408 Request Timeout, 409 Conflict, 429 Rate Limit, and >=500 Internal errors.
 
-To handle optional data, use the `.Valid()` method on the JSON field.
-`.Valid()` returns false if a field is `null`, not present, or couldn't be marshaled.
-
-If `.Valid()` is false, the corresponding field will simply be its zero value.
+You can use the `WithMaxRetries` option to configure or disable this:
 
 ```go
-raw := `{"owners": 1, "name": null}`
-
-var res Animal
-json.Unmarshal([]byte(raw), &res)
-
-// Accessing regular fields
-
-res.Owners // 1
-res.Name   // ""
-res.Age    // 0
-
-// Optional field checks
-
-res.JSON.Owners.Valid() // true
-res.JSON.Name.Valid()   // false
-res.JSON.Age.Valid()    // false
-
-// Raw JSON values
-
-res.JSON.Owners.Raw()                  // "1"
-res.JSON.Name.Raw() == "null"          // true
-res.JSON.Name.Raw() == respjson.Null   // true
-res.JSON.Age.Raw() == ""               // true
-res.JSON.Age.Raw() == respjson.Omitted // true
-```
-
-These `.JSON` structs also include an `ExtraFields` map containing
-any properties in the json response that were not specified
-in the struct. This can be useful for API features not yet
-present in the SDK.
-
-```go
-body := res.JSON.ExtraFields["my_unexpected_field"].Raw()
-```
-
-### Response Unions
-
-In responses, unions are represented by a flattened struct containing all possible fields from each of the
-object variants.
-To convert it to a variant use the `.AsFooVariant()` method or the `.AsAny()` method if present.
-
-If a response value union contains primitive values, primitive fields will be alongside
-the properties but prefixed with `Of` and feature the tag `json:"...,inline"`.
-
-```go
-type AnimalUnion struct {
-	// From variants [Dog], [Cat]
-	Owner Person `json:"owner"`
-	// From variant [Dog]
-	DogBreed string `json:"dog_breed"`
-	// From variant [Cat]
-	CatBreed string `json:"cat_breed"`
-	// ...
-
-	JSON struct {
-		Owner respjson.Field
-		// ...
-	} `json:"-"`
-}
-
-// If animal variant
-if animal.Owner.Address.ZipCode == "" {
-	panic("missing zip code")
-}
-
-// Switch on the variant
-switch variant := animal.AsAny().(type) {
-case Dog:
-case Cat:
-default:
-	panic("unexpected type")
-}
-```
-
-### RequestOptions
-
-This library uses the functional options pattern. Functions defined in the
-`option` package return a `RequestOption`, which is a closure that mutates a
-`RequestConfig`. These options can be supplied to the client or at individual
-requests. For example:
-
-```go
+// Configure the default for all requests:
 client := upbit.NewClient(
-	// Adds a header to every request made by the client
-	option.WithHeader("X-Some-Header", "custom_header_info"),
+	option.WithMaxRetries(0), // default is 2
 )
 
-client.Accounts.List(context.TODO(), ...,
-	// Override the header
-	option.WithHeader("X-Some-Header", "some_other_custom_header_info"),
-	// Add an undocumented field to the request body, using sjson syntax
-	option.WithJSONSet("some.json.path", map[string]string{"my": "object"}),
+// Override per-request:
+client.Accounts.List(context.TODO(), option.WithMaxRetries(5))
+```
+
+## Timeouts
+
+Requests do not time out by default. Use context to configure a timeout for a request lifecycle.
+
+Note that if a request is [retried](#retries), the context timeout does not start over.
+To set a per-retry timeout, use `option.WithRequestTimeout()`.
+
+```go
+// This sets the timeout for the request, including all the retries.
+ctx, cancel := context.WithTimeout(context.Background(), 5*time.Minute)
+defer cancel()
+client.Accounts.List(
+	ctx,
+	// This sets the per-retry timeout.
+	option.WithRequestTimeout(20*time.Second),
 )
 ```
 
-The request option `option.WithDebugLog(nil)` may be helpful while debugging.
+## Pagination
 
-See the [full list of request options](https://pkg.go.dev/github.com/upbit-official/upbit-sdk-go/option).
-
-### Pagination
-
-This library provides some conveniences for working with paginated list endpoints.
+This SDK provides conveniences for working with paginated list endpoints.
 
 You can use `.ListAutoPaging()` methods to iterate through items across all pages:
 
@@ -300,8 +222,7 @@ if err := iter.Err(); err != nil {
 }
 ```
 
-Or you can use simple `.List()` methods to fetch a single page and receive a standard response object
-with additional helper methods like `.GetNextPage()`, e.g.:
+Or you can use simple `.List()` methods to fetch a single page and receive a standard response object with helper methods like `.GetNextPage()`:
 
 ```go
 page, err := client.Orders.ListOpen(context.TODO(), upbit.OrderListOpenParams{})
@@ -316,90 +237,38 @@ if err != nil {
 }
 ```
 
-### Errors
+## Advanced Usage
 
-When the API returns a non-success status code, we return an error with type
-`*upbit.Error`. This contains the `StatusCode`, `*http.Request`, and
-`*http.Response` values of the request, as well as the JSON of the error body
-(much like other response objects in the SDK).
+### RequestOptions
 
-To handle errors, we recommend that you use the `errors.As` pattern:
+This SDK uses the functional options pattern. Functions defined in the `option` package return a `RequestOption`, which is a closure that mutates a `RequestConfig`. These options can be supplied to the client or to individual requests.
 
 ```go
-_, err := client.Accounts.List(context.TODO())
-if err != nil {
-	var apierr *upbit.Error
-	if errors.As(err, &apierr) {
-		println(string(apierr.DumpRequest(true)))  // Prints the serialized HTTP request
-		println(string(apierr.DumpResponse(true))) // Prints the serialized HTTP response
-	}
-	panic(err.Error()) // GET "/v1/accounts": 400 Bad Request { ... }
-}
-```
-
-When other errors occur, they are returned unwrapped; for example,
-if HTTP transport fails, you might receive `*url.Error` wrapping `*net.OpError`.
-
-### Timeouts
-
-Requests do not time out by default; use context to configure a timeout for a request lifecycle.
-
-Note that if a request is [retried](#retries), the context timeout does not start over.
-To set a per-retry timeout, use `option.WithRequestTimeout()`.
-
-```go
-// This sets the timeout for the request, including all the retries.
-ctx, cancel := context.WithTimeout(context.Background(), 5*time.Minute)
-defer cancel()
-client.Accounts.List(
-	ctx,
-	// This sets the per-retry timeout
-	option.WithRequestTimeout(20*time.Second),
-)
-```
-
-### File uploads
-
-Request parameters that correspond to file uploads in multipart requests are typed as
-`io.Reader`. The contents of the `io.Reader` will by default be sent as a multipart form
-part with the file name of "anonymous_file" and content-type of "application/octet-stream".
-
-The file name and content-type can be customized by implementing `Name() string` or `ContentType()
-string` on the run-time type of `io.Reader`. Note that `os.File` implements `Name() string`, so a
-file returned by `os.Open` will be sent with the file name on disk.
-
-We also provide a helper `upbit.File(reader io.Reader, filename string, contentType string)`
-which can be used to wrap any `io.Reader` with the appropriate file name and content type.
-
-### Retries
-
-Certain errors will be automatically retried 2 times by default, with a short exponential backoff.
-We retry by default all connection errors, 408 Request Timeout, 409 Conflict, 429 Rate Limit,
-and >=500 Internal errors.
-
-You can use the `WithMaxRetries` option to configure or disable this:
-
-```go
-// Configure the default for all requests:
 client := upbit.NewClient(
-	option.WithMaxRetries(0), // default is 2
+	// Adds a header to every request made by the client.
+	option.WithHeader("X-Some-Header", "custom_header_info"),
 )
 
-// Override per-request:
-client.Accounts.List(context.TODO(), option.WithMaxRetries(5))
+_, err := client.Accounts.List(
+	context.TODO(),
+	// Overrides the header for this request.
+	option.WithHeader("X-Some-Header", "some_other_custom_header_info"),
+)
 ```
 
-### Accessing raw response data (e.g. response headers)
+The request option `option.WithDebugLog(nil)` may be helpful while debugging.
 
-You can access the raw HTTP response data by using the `option.WithResponseInto()` request option. This is useful when
-you need to examine response headers, status codes, or other details.
+See the [full list of request options](https://pkg.go.dev/github.com/upbit-official/upbit-sdk-go/option).
+
+### Accessing raw response data
+
+You can access raw HTTP response data by using the `option.WithResponseInto()` request option. This is useful when you need to examine response headers, status codes, or other details.
 
 ```go
-// Create a variable to store the HTTP response
 var response *http.Response
 accounts, err := client.Accounts.List(context.TODO(), option.WithResponseInto(&response))
 if err != nil {
-	// handle error
+	panic(err.Error())
 }
 fmt.Printf("%+v\n", accounts)
 
@@ -409,68 +278,85 @@ fmt.Printf("Headers: %+#v\n", response.Header)
 
 ### Making custom/undocumented requests
 
-This library is typed for convenient access to the documented API. If you need to access undocumented
-endpoints, params, or response properties, the library can still be used.
+This SDK is typed for convenient access to the documented API. If you need to access undocumented endpoints, params, or response properties, the SDK can still be used.
 
 #### Undocumented endpoints
 
-To make requests to undocumented endpoints, you can use `client.Get`, `client.Post`, and other HTTP verbs.
-`RequestOptions` on the client, such as retries, will be respected when making these requests.
+To make requests to undocumented endpoints, you can use `client.Get`, `client.Post`, and other HTTP verbs. `RequestOptions` on the client, such as retries, will be respected when making these requests.
 
 ```go
-var (
-    // params can be an io.Reader, a []byte, an encoding/json serializable object,
-    // or a "…Params" struct defined in this library.
-    params map[string]any
+var result map[string]any
 
-    // result can be an []byte, *http.Response, a encoding/json deserializable object,
-    // or a model defined in this library.
-    result *http.Response
+err := client.Get(
+	context.Background(),
+	"/v1/undocumented",
+	nil,
+	&result,
+	option.WithQuery("market", "KRW-BTC"),
 )
-err := client.Post(context.Background(), "/unspecified", params, &result)
 if err != nil {
-    …
+	panic(err.Error())
 }
 ```
 
 #### Undocumented request params
 
-To make requests using undocumented parameters, you may use either the `option.WithQuery()`
-or the `option.WithJSONSet()` methods.
+To send undocumented query parameters, use `option.WithQuery()` on a real SDK method call:
 
 ```go
-params := FooNewParams{
-    ID:   "id_xxxx",
-    Data: FooNewParamsData{
-        FirstName: upbit.String("John"),
-    },
+candles, err := client.Candles.ListDays(
+	context.Background(),
+	upbit.CandleListDaysParams{
+		Market: "KRW-BTC",
+	},
+	option.WithQuery("include_experimental", "true"),
+)
+```
+
+To send undocumented JSON body parameters, use `option.WithJSONSet()`:
+
+```go
+params := upbit.OrderNewParams{
+	Market:  "KRW-BTC",
+	Side:    upbit.SideEnumBid,
+	OrdType: upbit.OrdTypeEnumLimit,
+	Price:   upbit.String("14000000"),
+	Volume:  upbit.String("1"),
 }
-client.Foo.New(context.Background(), params, option.WithJSONSet("data.last_name", "Doe"))
+
+order, err := client.Orders.New(
+	context.Background(),
+	params,
+	option.WithJSONSet("metadata.strategy_id", "manual-1"),
+)
 ```
 
 #### Undocumented response properties
 
-To access undocumented response properties, you may either access the raw JSON of the response as a string
-with `result.JSON.RawJSON()`, or get the raw JSON of a particular field on the result with
-`result.JSON.Foo.Raw()`.
+To access undocumented response properties, use `RawJSON()` for the full raw JSON payload or `JSON.ExtraFields` for fields not represented on the response struct.
 
-Any fields that are not present on the response struct will be saved and can be accessed by `result.JSON.ExtraFields` which returns the extra fields as a `map[string]Field`.
+```go
+if len(*accounts) > 0 {
+	account := (*accounts)[0]
+	fmt.Println(account.RawJSON())
+	fmt.Println(account.JSON.ExtraFields["new_field"].Raw())
+}
+```
 
 ### Middleware
 
-We provide `option.WithMiddleware` which applies the given
-middleware to requests.
+We provide `option.WithMiddleware`, which applies the given middleware to requests.
 
 ```go
 func Logger(req *http.Request, next option.MiddlewareNext) (res *http.Response, err error) {
-	// Before the request
+	// Before the request.
 	start := time.Now()
 	LogReq(req)
 
-	// Forward the request to the next handler
+	// Forward the request to the next handler.
 	res, err = next(req)
 
-	// Handle stuff after the request
+	// Handle work after the request.
 	end := time.Now()
 	LogRes(res, err, end.Sub(start))
 
@@ -482,29 +368,26 @@ client := upbit.NewClient(
 )
 ```
 
-When multiple middlewares are provided as variadic arguments, the middlewares
-are applied left to right. If `option.WithMiddleware` is given
-multiple times, for example first in the client then the method, the
-middleware in the client will run first and the middleware given in the method
-will run next.
+When multiple middlewares are provided as variadic arguments, the middlewares are applied left to right. If `option.WithMiddleware` is given multiple times, for example first in the client then the method, the middleware in the client will run first and the middleware given in the method will run next.
 
-You may also replace the default `http.Client` with
-`option.WithHTTPClient(client)`. Only one http client is
-accepted (this overwrites any previous client) and receives requests after any
-middleware has been applied.
+You may also replace the default `http.Client` with `option.WithHTTPClient(client)`. Only one HTTP client is accepted, overwriting any previous client, and receives requests after any middleware has been applied.
 
 ## Versioning
 
 This package generally follows [SemVer](https://semver.org/spec/v2.0.0.html) conventions, though certain backwards-incompatible changes may be released as minor versions:
 
-1. Changes to library internals which are technically public but not intended or documented for external use.
+1. Changes to SDK internals which are technically public but not intended or documented for external use.
 2. Changes that we do not expect to impact the vast majority of users in practice.
 
 We take backwards-compatibility seriously and work hard to ensure you can rely on a smooth upgrade experience.
 
 We are keen for your feedback; please contact us at open-api@upbit.com with questions, bugs, or suggestions.
 
-## Contributing
+## Requirements
+
+This SDK requires Go 1.25+.
+
+## Contribution
 
 The Upbit SDK is in its initial release phase, and public contributions (Issues/PRs) are currently closed.
 For bug reports and feedback, please email open-api@upbit.com.

@@ -5,7 +5,6 @@ import (
 	"net/http"
 	"os"
 	"slices"
-	"strings"
 
 	"github.com/upbit-official/upbit-sdk-go/internal/requestconfig"
 	"github.com/upbit-official/upbit-sdk-go/lib"
@@ -21,6 +20,7 @@ type Client struct {
 	TravelRule   TravelRuleService
 	WalletStatus WalletStatusService
 	APIKeys      APIKeyService
+	Pockets      PocketService
 	Orders       OrderService
 	Withdraws    WithdrawService
 	Deposits     DepositService
@@ -33,7 +33,8 @@ type Client struct {
 
 // DefaultClientOptions read from the environment (UPBIT_ACCESS_KEY,
 // UPBIT_SECRET_KEY, UPBIT_BASE_URL). This should be used to initialize new
-// clients.
+// clients. UPBIT_CUSTOM_HEADERS is deprecated and ignored; use
+// option.WithHeader to add custom headers.
 func DefaultClientOptions() []option.RequestOption {
 	defaults := []option.RequestOption{option.WithHTTPClient(defaultHTTPClient()), option.WithEnvironmentKr()}
 	if o, ok := os.LookupEnv("UPBIT_BASE_URL"); ok {
@@ -44,14 +45,6 @@ func DefaultClientOptions() []option.RequestOption {
 	}
 	if o, ok := os.LookupEnv("UPBIT_SECRET_KEY"); ok {
 		defaults = append(defaults, option.WithSecretKey(o))
-	}
-	if o, ok := os.LookupEnv("UPBIT_CUSTOM_HEADERS"); ok {
-		for _, line := range strings.Split(o, "\n") {
-			colon := strings.Index(line, ":")
-			if colon >= 0 {
-				defaults = append(defaults, option.WithHeader(strings.TrimSpace(line[:colon]), strings.TrimSpace(line[colon+1:])))
-			}
-		}
 	}
 	return defaults
 }
@@ -75,6 +68,7 @@ func NewClient(opts ...option.RequestOption) (r Client) {
 	r.TravelRule = NewTravelRuleService(opts...)
 	r.WalletStatus = NewWalletStatusService(opts...)
 	r.APIKeys = NewAPIKeyService(opts...)
+	r.Pockets = NewPocketService(opts...)
 	r.Orders = NewOrderService(opts...)
 	r.Withdraws = NewWithdrawService(opts...)
 	r.Deposits = NewDepositService(opts...)

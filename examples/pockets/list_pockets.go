@@ -1,5 +1,5 @@
 // Auto-generated example — do not edit manually.
-// Test Order Creation (POST /v1/orders/test)
+// List Pockets (GET /v1/pockets)
 package main
 
 import (
@@ -12,19 +12,12 @@ import (
 )
 
 // default
-func exampleTestOrder() {
+func exampleListPockets() {
 	client := upbit.NewClient(
 		option.WithAccessKey(os.Getenv("UPBIT_ACCESS_KEY")),
 		option.WithSecretKey(os.Getenv("UPBIT_SECRET_KEY")),
 	)
-	params := upbit.OrderTestNewParams{
-		Market:  "KRW-BTC",
-		Side:    upbit.SideEnumBid,
-		Volume:  upbit.String("1"),
-		Price:   upbit.String("14000000"),
-		OrdType: upbit.OrdTypeEnumLimit,
-	}
-	res, err := client.Orders.TestNew(context.TODO(), params)
+	res, err := client.Pockets.List(context.TODO())
 	if err != nil {
 		panic(err)
 	}
@@ -32,5 +25,5 @@ func exampleTestOrder() {
 }
 
 func main() {
-	exampleTestOrder()
+	exampleListPockets()
 }
