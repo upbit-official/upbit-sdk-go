@@ -37,7 +37,8 @@ func NewTickerService(opts ...option.RequestOption) (r TickerService) {
 // GET /v1/ticker/all
 //
 // - docs(kr): https://docs.upbit.com/kr/reference/list-quote-tickers
-// - docs(global): https://global-docs.upbit.com/reference/list-quote-tickers
+// - docs(sg/th): https://global-docs.upbit.com/reference/list-quote-tickers
+// - docs(id): https://docs.upbit.co.id/reference/list-quote-tickers
 //
 // Retrieves current price information of all pairs in the specified market(quote
 // currency).
@@ -54,7 +55,8 @@ func (r *TickerService) ListByQuoteCurrencies(ctx context.Context, query TickerL
 // GET /v1/ticker
 //
 // - docs(kr): https://docs.upbit.com/kr/reference/list-tickers
-// - docs(global): https://global-docs.upbit.com/reference/list-tickers
+// - docs(sg/th): https://global-docs.upbit.com/reference/list-tickers
+// - docs(id): https://docs.upbit.co.id/reference/list-tickers
 //
 // Retrieves the current price for the specified pair. Returns the ticker snapshot
 // of the pair at the time of the request.
@@ -133,24 +135,24 @@ type Ticker struct {
 	//
 	// [Format] yyyyMMdd
 	TradeDate string `json:"trade_date" api:"required"`
-	// Most recent trade date (KST-based). Supported in KOREA only.
-	//
-	// [Format] yyyyMMdd
-	TradeDateKst string `json:"trade_date_kst" api:"required"`
 	// Current (closing) price of the trading pair.
 	TradePrice string `json:"trade_price" api:"required"`
 	// Most recent trade time (UTC-based).
 	//
 	// [Format] HHmmss
 	TradeTime string `json:"trade_time" api:"required"`
-	// Most recent trade time (KST-based). Supported in KOREA only.
-	//
-	// [Format] HHmmss
-	TradeTimeKst string `json:"trade_time_kst" api:"required"`
 	// Milliseconds timestamp when the trade was executed.
 	TradeTimestamp int64 `json:"trade_timestamp" api:"required"`
 	// Most recent trade volume.
 	TradeVolume string `json:"trade_volume" api:"required"`
+	// Most recent trade date (KST-based). Supported in KOREA only.
+	//
+	// [Format] yyyyMMdd
+	TradeDateKst string `json:"trade_date_kst"`
+	// Most recent trade time (KST-based). Supported in KOREA only.
+	//
+	// [Format] HHmmss
+	TradeTimeKst string `json:"trade_time_kst"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		AccTradePrice      respjson.Field
@@ -173,12 +175,12 @@ type Ticker struct {
 		SignedChangeRate   respjson.Field
 		Timestamp          respjson.Field
 		TradeDate          respjson.Field
-		TradeDateKst       respjson.Field
 		TradePrice         respjson.Field
 		TradeTime          respjson.Field
-		TradeTimeKst       respjson.Field
 		TradeTimestamp     respjson.Field
 		TradeVolume        respjson.Field
+		TradeDateKst       respjson.Field
+		TradeTimeKst       respjson.Field
 		ExtraFields        map[string]respjson.Field
 		raw                string
 	} `json:"-"`

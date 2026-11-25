@@ -38,7 +38,8 @@ func NewOrderbookService(opts ...option.RequestOption) (r OrderbookService) {
 // GET /v1/orderbook
 //
 // - docs(kr): https://docs.upbit.com/kr/reference/list-orderbooks
-// - docs(global): https://global-docs.upbit.com/reference/list-orderbooks
+// - docs(sg/th): https://global-docs.upbit.com/reference/list-orderbooks
+// - docs(id): https://docs.upbit.co.id/reference/list-orderbooks
 //
 // Retrieves the real-time orderbook data for the specified markets.
 func (r *OrderbookService) List(ctx context.Context, query OrderbookListParams, opts ...option.RequestOption) (res *[]OrderbookListResponse, err error) {
@@ -54,8 +55,9 @@ func (r *OrderbookService) List(ctx context.Context, query OrderbookListParams, 
 // GET /v1/orderbook/instruments
 //
 //   - docs(kr): https://docs.upbit.com/kr/reference/list-orderbook-instruments
-//   - docs(global):
+//   - docs(sg/th):
 //     https://global-docs.upbit.com/reference/list-orderbook-instruments
+//   - docs(id): https://docs.upbit.co.id/reference/list-orderbook-instruments
 //
 // Retrieves the tick size (order price unit) for the specified trading pairs.
 func (r *OrderbookService) ListInstruments(ctx context.Context, query OrderbookListInstrumentsParams, opts ...option.RequestOption) (res *[]OrderbookListInstrumentsResponse, err error) {
@@ -130,19 +132,19 @@ type OrderbookListInstrumentsResponse struct {
 	Market string `json:"market" api:"required"`
 	// Quote currency code for the trading pair (e.g., SGD, BTC, USDT).
 	QuoteCurrency string `json:"quote_currency" api:"required"`
+	// Price unit applied to the orderbook level.
+	TickSize string `json:"tick_size" api:"required"`
 	// Supported orderbook aggregation levels for this trading pair.
 	//
 	// - 0: Default unit
 	// - Aggregation is only supported for KRW markets. (BTC, USDT markets only have 0)
-	SupportedLevels []string `json:"supported_levels" api:"required"`
-	// Price unit applied to the orderbook level.
-	TickSize string `json:"tick_size" api:"required"`
+	SupportedLevels []string `json:"supported_levels"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Market          respjson.Field
 		QuoteCurrency   respjson.Field
-		SupportedLevels respjson.Field
 		TickSize        respjson.Field
+		SupportedLevels respjson.Field
 		ExtraFields     map[string]respjson.Field
 		raw             string
 	} `json:"-"`

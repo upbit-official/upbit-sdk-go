@@ -35,7 +35,8 @@ func NewAccountService(opts ...option.RequestOption) (r AccountService) {
 // GET /v1/accounts
 //
 // - docs(kr): https://docs.upbit.com/kr/reference/get-balance
-// - docs(global): https://global-docs.upbit.com/reference/get-balance
+// - docs(sg/th): https://global-docs.upbit.com/reference/get-balance
+// - docs(id): https://docs.upbit.co.id/reference/get-balance
 //
 // Retrieves the list of assets and balances owned by the account.
 func (r *AccountService) List(ctx context.Context, opts ...option.RequestOption) (res *[]AccountListResponse, err error) {

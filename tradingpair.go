@@ -38,7 +38,8 @@ func NewTradingPairService(opts ...option.RequestOption) (r TradingPairService) 
 // GET /v1/market/all
 //
 // - docs(kr): https://docs.upbit.com/kr/reference/list-trading-pairs
-// - docs(global): https://global-docs.upbit.com/reference/list-trading-pairs
+// - docs(sg/th): https://global-docs.upbit.com/reference/list-trading-pairs
+// - docs(id): https://docs.upbit.co.id/reference/list-trading-pairs
 //
 // Retrieves the list of all trading pairs supported by Upbit.
 func (r *TradingPairService) List(ctx context.Context, query TradingPairListParams, opts ...option.RequestOption) (res *[]TradingPairListResponse, err error) {
@@ -52,12 +53,12 @@ func (r *TradingPairService) List(ctx context.Context, query TradingPairListPara
 type TradingPairListResponse struct {
 	// English name of the digital asset.
 	EnglishName string `json:"english_name" api:"required"`
-	// Korean name of the digital asset.
-	KoreanName string `json:"korean_name" api:"required"`
 	// Trading pair code representing the market.
 	//
 	// [Example]: "SGD-BTC"
 	Market string `json:"market" api:"required"`
+	// Korean name of the digital asset.
+	KoreanName string `json:"korean_name"`
 	// Market alert information.
 	MarketEvent TradingPairListResponseMarketEvent `json:"market_event"`
 	// Trading pair warning status.
@@ -67,8 +68,8 @@ type TradingPairListResponse struct {
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		EnglishName   respjson.Field
-		KoreanName    respjson.Field
 		Market        respjson.Field
+		KoreanName    respjson.Field
 		MarketEvent   respjson.Field
 		MarketWarning respjson.Field
 		ExtraFields   map[string]respjson.Field

@@ -1,6 +1,7 @@
 package lib
 
 import (
+	"fmt"
 	"io"
 	"net/http"
 
@@ -27,10 +28,13 @@ func WithJWTAuth(accessKey, secretKey string) option.RequestOption {
 			return next(req)
 		}
 
-		queryString := extractQueryString(req)
+		queryString, err := extractQueryString(req)
+		if err != nil {
+			return nil, err
+		}
 		token, err := CreateJWTToken(accessKey, secretKey, queryString)
 		if err != nil {
-			return next(req)
+			return nil, fmt.Errorf("could not create JWT: %w", err)
 		}
 
 		reqClone := req.Clone(req.Context())
@@ -41,24 +45,33 @@ func WithJWTAuth(accessKey, secretKey string) option.RequestOption {
 
 // extractQueryString returns the URL-decoded query string suitable for JWT
 // query hashing. Prefers URL query params; falls back to JSON body.
-func extractQueryString(req *http.Request) string {
+func extractQueryString(req *http.Request) (string, error) {
 	if rawQuery := req.URL.RawQuery; rawQuery != "" {
-		return QueryStringFromRawQuery(rawQuery)
+		return QueryStringFromRawQuery(rawQuery), nil
 	}
 	if req.GetBody != nil {
 		bodyReader, err := req.GetBody()
-		if err == nil {
-			defer bodyReader.Close()
-			body, err := io.ReadAll(bodyReader)
-			if err == nil && len(body) > 0 {
-				qs, err := QueryStringFromJSONBody(body)
-				if err == nil {
-					return qs
-				}
-			}
+		if err != nil {
+			return "", fmt.Errorf("could not copy body for JWT: %w", err)
 		}
+		if bodyReader == nil {
+			return "", fmt.Errorf("could not copy body for JWT: nil reader")
+		}
+		body, readErr := io.ReadAll(bodyReader)
+		closeErr := bodyReader.Close()
+		if readErr != nil {
+			return "", fmt.Errorf("could not read body for JWT: %w", readErr)
+		}
+		if closeErr != nil {
+			return "", fmt.Errorf("could not close body copy for JWT: %w", closeErr)
+		}
+		qs, err := QueryStringFromJSONBody(body)
+		if err != nil {
+			return "", fmt.Errorf("could not convert body for JWT: %w", err)
+		}
+		return qs, nil
 	}
-	return ""
+	return "", nil
 }
 
 // WithCredentials is a convenience helper that sets both the access key and

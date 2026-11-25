@@ -4,8 +4,9 @@
 
 이 디렉토리에는 Upbit Go SDK의 주요 기능을 시나리오 형태로 보여주는 예제가 포함되어 있습니다.
 
-각 예제는 실제 거래 흐름을 기반으로 작성되었으며, 기본적으로 **Dry run 모드**로 동작합니다.
-Dry run 모드에서는 조회만 수행하고, 실제 주문/출금 등 쓰기 작업은 실행하지 않습니다.
+이 디렉토리에는 시나리오 예제와 API별 생성 예제가 있습니다.
+`DRY_RUN`을 구현한 시나리오 예제는 기본 실행에서 해당 분기의 쓰기 요청을 생략합니다. 조회와 테스트 주문 API는 실제로 호출합니다.
+[`orders/`](./orders/) 같은 기능별 하위 디렉토리의 생성 예제에는 `DRY_RUN`이 없습니다. 실행하면 해당 API를 호출하며, 실제 주문·출금 요청도 보낼 수 있습니다.
 
 > **참고:** 각 파일은 독립된 `package main` 프로그램입니다. `go run examples/<file>.go`로 실행하세요. API 엔드포인트 단위의 예제는 기능별 하위 디렉토리에 정리되어 있습니다. 예를 들어 주문 관련 예제는 [`examples/orders/`](./orders/)를 참고하세요.
 
@@ -114,7 +115,7 @@ DRY_RUN=false UPBIT_ACCESS_KEY=<key> UPBIT_SECRET_KEY=<secret> go run examples/o
 
 **포함 기능:**
 - 주문 가능 정보 확인 (수수료율, 최소 주문금액, 지원 주문 유형)
-- 호가 단위(tick size) 기반 가격 반올림 처리 후 지정가 매수/매도
+- 가격을 호가 단위(tick size)로 내림한 뒤 지정가 매수/매도
 - 시장가 매수(price) / 시장가 매도(volume)
 - 최유리 매수/매도 (IOC)
 - 에러 검증 (존재하지 않는 마켓, 가격 누락)
@@ -164,11 +165,13 @@ DRY_RUN=false UPBIT_ACCESS_KEY=<key> UPBIT_SECRET_KEY=<secret> go run examples/d
 # Dry run (기본) — 조회만
 UPBIT_ACCESS_KEY=<key> UPBIT_SECRET_KEY=<secret> go run examples/withdrawals_kr.go
 
-# 실제 실행 — 출금 가능 정보 조회 (실제 출금은 코드 수정 후 실행)
+# 실제 실행 — 원화 출금 요청 포함 (기본 10,000원, kakao)
 DRY_RUN=false UPBIT_ACCESS_KEY=<key> UPBIT_SECRET_KEY=<secret> go run examples/withdrawals_kr.go
 ```
 
 ---
+
+`DRY_RUN=false`이면 [`withdrawals_kr.go`](./withdrawals_kr.go)는 코드 수정 없이 기본 금액 10,000원·`kakao` 인증수단으로 원화 출금 요청을 보낼 수 있습니다. 디지털 자산 출금은 실제 출금 주소를 입력해야 합니다.
 
 ### `dca_kr.go` — DCA 정기 매수 자동화
 

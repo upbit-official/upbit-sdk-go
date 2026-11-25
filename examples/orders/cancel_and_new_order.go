@@ -20,6 +20,7 @@ func exampleCancelAndNewOrder() {
 	params := upbit.OrderCancelAndNewParams{
 		PrevOrderUuid: upbit.String("ad217e24-ed02-469c-9b30-c08dbbda6908"),
 		NewOrdType:    upbit.OrdTypeEnumLimit,
+		NewVolume:     upbit.String("1"),
 		NewPrice:      upbit.String("100000000"),
 	}
 	res, err := client.Orders.CancelAndNew(context.TODO(), params)

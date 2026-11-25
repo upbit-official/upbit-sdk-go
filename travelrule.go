@@ -36,7 +36,8 @@ func NewTravelRuleService(opts ...option.RequestOption) (r TravelRuleService) {
 // GET /v1/travel_rule/vasps
 //
 // - docs(kr): https://docs.upbit.com/kr/reference/list-travelrule-vasps
-// - docs(global): https://global-docs.upbit.com/reference/list-travelrule-vasps
+// - docs(sg/th): https://global-docs.upbit.com/reference/list-travelrule-vasps
+// - docs(id): https://docs.upbit.co.id/reference/list-travelrule-vasps
 //
 // Retrieves the list of exchanges supporting Travel Rule.
 func (r *TravelRuleService) ListVasps(ctx context.Context, opts ...option.RequestOption) (res *[]TravelRuleListVaspsResponse, err error) {
@@ -50,9 +51,9 @@ func (r *TravelRuleService) ListVasps(ctx context.Context, opts ...option.Reques
 //
 // POST /v1/travel_rule/deposit/txid
 //
-//   - docs(kr): https://docs.upbit.com/kr/reference/verify-travelrule-by-txid
-//   - docs(global):
-//     https://global-docs.upbit.com/reference/verify-travelrule-by-txid
+// - docs(kr): https://docs.upbit.com/kr/reference/verify-travelrule-by-txid
+// - docs(sg/th): https://global-docs.upbit.com/reference/verify-travelrule-by-txid
+// - docs(id): https://docs.upbit.co.id/reference/verify-travelrule-by-txid
 //
 // Retrieves travel rule verification using the deposit TxID.
 func (r *TravelRuleService) VerifyDepositByTxid(ctx context.Context, body TravelRuleVerifyDepositByTxidParams, opts ...option.RequestOption) (res *VerificationResult, err error) {
@@ -66,9 +67,9 @@ func (r *TravelRuleService) VerifyDepositByTxid(ctx context.Context, body Travel
 //
 // POST /v1/travel_rule/deposit/uuid
 //
-//   - docs(kr): https://docs.upbit.com/kr/reference/verify-travelrule-by-uuid
-//   - docs(global):
-//     https://global-docs.upbit.com/reference/verify-travelrule-by-uuid
+// - docs(kr): https://docs.upbit.com/kr/reference/verify-travelrule-by-uuid
+// - docs(sg/th): https://global-docs.upbit.com/reference/verify-travelrule-by-uuid
+// - docs(id): https://docs.upbit.co.id/reference/verify-travelrule-by-uuid
 //
 // Retrieves travel rule verification using the deposit UUID.
 func (r *TravelRuleService) VerifyDepositByUuid(ctx context.Context, body TravelRuleVerifyDepositByUuidParams, opts ...option.RequestOption) (res *VerificationResult, err error) {

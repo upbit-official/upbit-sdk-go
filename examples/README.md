@@ -4,8 +4,9 @@ English | [한국어](./README_KR.md)
 
 This directory contains examples that demonstrate the key features of the Upbit Go SDK in scenario-based flows.
 
-Each example is written based on real trading workflows and runs in **Dry run mode** by default.
-In dry run mode, only read operations are performed — write operations such as placing orders or making withdrawals are skipped.
+This directory contains scenario examples and generated per-endpoint examples.
+Scenario examples that implement `DRY_RUN` skip their guarded write operations by default; read and order-test APIs still make real requests.
+Generated examples in resource subdirectories, such as [`orders/`](./orders/), do not implement `DRY_RUN`. Running them sends requests to the corresponding APIs, including real order or withdrawal requests.
 
 > **Note:** Each file is an independent `package main` program. Run with `go run examples/<file>.go`. Per-endpoint examples are organized in feature-specific subdirectories within this directory (e.g., [`examples/orders/`](./orders/) for order-related examples). For Korean scenario examples, see [`README_KR.md`](./README_KR.md).
 
@@ -114,7 +115,7 @@ The Order Creation Test API performs the same validation as a real order but doe
 
 **Covered features:**
 - Check order availability (fee rate, minimum order amount, supported order types)
-- Limit buy/sell with tick-size-aware price rounding
+- Limit buy/sell with prices rounded down to the tick size
 - Market buy (price) / market sell (volume)
 - Best buy/sell with IOC time-in-force
 - Error handling validation (invalid market, missing price)
@@ -164,11 +165,13 @@ Always double-check the address, network, and amount before running.
 # Dry run (default) — read-only
 UPBIT_ACCESS_KEY=<key> UPBIT_SECRET_KEY=<secret> go run examples/withdrawals.go
 
-# Live run — fetches withdrawal availability (actual withdrawal requires code modification)
+# Live run — includes a KRW withdrawal request (default: 10,000 KRW, kakao)
 DRY_RUN=false UPBIT_ACCESS_KEY=<key> UPBIT_SECRET_KEY=<secret> go run examples/withdrawals.go
 ```
 
 ---
+
+When `DRY_RUN=false`, the KR withdrawal scenario ([`withdrawals_kr.go`](./withdrawals_kr.go)) can request a KRW withdrawal using the default amount of 10,000 KRW and `kakao` authentication without editing the code. Digital asset withdrawals require an actual withdrawal address.
 
 ### `dca.go` — DCA Automated Recurring Buy
 

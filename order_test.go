@@ -114,7 +114,7 @@ func TestOrderCancelAndNewWithOptionalParams(t *testing.T) {
 		NewPrice:            upbit.String("100000000"),
 		NewSmpType:          upbit.SmpTypeEnumCancelMaker,
 		NewTimeInForce:      upbit.TimeInForceEnumFok,
-		NewVolume:           upbit.String("remain_only"),
+		NewVolume:           upbit.String("1"),
 		PrevOrderIdentifier: upbit.String("9ca023a5-851b-4fec-9f0a-48cd83c2eaae"),
 		PrevOrderUuid:       upbit.String("ad217e24-ed02-469c-9b30-c08dbbda6908"),
 	})

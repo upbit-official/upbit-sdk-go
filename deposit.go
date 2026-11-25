@@ -40,7 +40,8 @@ func NewDepositService(opts ...option.RequestOption) (r DepositService) {
 // GET /v1/deposit
 //
 // - docs(kr): https://docs.upbit.com/kr/reference/get-deposit
-// - docs(global): https://global-docs.upbit.com/reference/get-deposit
+// - docs(sg/th): https://global-docs.upbit.com/reference/get-deposit
+// - docs(id): https://docs.upbit.co.id/reference/get-deposit
 //
 // Retrieves the latest deposit history. To query specific deposit information, you
 // can specify the deposit’s UUID, transaction ID (TXID), or currency code.
@@ -56,7 +57,8 @@ func (r *DepositService) Get(ctx context.Context, query DepositGetParams, opts .
 // GET /v1/deposits
 //
 // - docs(kr): https://docs.upbit.com/kr/reference/list-deposits
-// - docs(global): https://global-docs.upbit.com/reference/list-deposits
+// - docs(sg/th): https://global-docs.upbit.com/reference/list-deposits
+// - docs(id): https://docs.upbit.co.id/reference/list-deposits
 //
 // Retrieves the latest deposit list.
 func (r *DepositService) List(ctx context.Context, query DepositListParams, opts ...option.RequestOption) (res *pagination.UuidCursorIDPage[Deposit], err error) {
@@ -81,7 +83,8 @@ func (r *DepositService) List(ctx context.Context, query DepositListParams, opts
 // GET /v1/deposits
 //
 // - docs(kr): https://docs.upbit.com/kr/reference/list-deposits
-// - docs(global): https://global-docs.upbit.com/reference/list-deposits
+// - docs(sg/th): https://global-docs.upbit.com/reference/list-deposits
+// - docs(id): https://docs.upbit.co.id/reference/list-deposits
 //
 // Retrieves the latest deposit list.
 func (r *DepositService) ListAutoPaging(ctx context.Context, query DepositListParams, opts ...option.RequestOption) *pagination.UuidCursorIDPageAutoPager[Deposit] {
@@ -93,7 +96,8 @@ func (r *DepositService) ListAutoPaging(ctx context.Context, query DepositListPa
 // POST /v1/deposits/generate_coin_address
 //
 // - docs(kr): https://docs.upbit.com/kr/reference/create-deposit-address
-// - docs(global): https://global-docs.upbit.com/reference/create-deposit-address
+// - docs(sg/th): https://global-docs.upbit.com/reference/create-deposit-address
+// - docs(id): https://docs.upbit.co.id/reference/create-deposit-address
 //
 // Requests the creation of a deposit address for depositing assets from a personal
 // wallet or another exchange into Upbit.
@@ -124,7 +128,8 @@ func (r *DepositService) DepositKrw(ctx context.Context, body DepositDepositKrwP
 // GET /v1/deposits/coin_addresses
 //
 // - docs(kr): https://docs.upbit.com/kr/reference/list-deposit-addresses
-// - docs(global): https://global-docs.upbit.com/reference/list-deposit-addresses
+// - docs(sg/th): https://global-docs.upbit.com/reference/list-deposit-addresses
+// - docs(id): https://docs.upbit.co.id/reference/list-deposit-addresses
 //
 // Retrieves deposit address information for the specified currency. Return all
 // successfully generated deposit addresses.
@@ -140,8 +145,9 @@ func (r *DepositService) ListCoinAddresses(ctx context.Context, opts ...option.R
 // GET /v1/deposits/chance/coin
 //
 //   - docs(kr): https://docs.upbit.com/kr/reference/available-deposit-information
-//   - docs(global):
+//   - docs(sg/th):
 //     https://global-docs.upbit.com/reference/available-deposit-information
+//   - docs(id): https://docs.upbit.co.id/reference/available-deposit-information
 //
 // Deposits availability information for the specified currency is retrieved.
 func (r *DepositService) GetChance(ctx context.Context, query DepositGetChanceParams, opts ...option.RequestOption) (res *DepositGetChanceResponse, err error) {
@@ -156,7 +162,8 @@ func (r *DepositService) GetChance(ctx context.Context, query DepositGetChancePa
 // GET /v1/deposits/coin_address
 //
 // - docs(kr): https://docs.upbit.com/kr/reference/get-deposit-address
-// - docs(global): https://global-docs.upbit.com/reference/get-deposit-address
+// - docs(sg/th): https://global-docs.upbit.com/reference/get-deposit-address
+// - docs(id): https://docs.upbit.co.id/reference/get-deposit-address
 //
 // Retrieves deposit address information for the specified currency.
 func (r *DepositService) GetCoinAddress(ctx context.Context, query DepositGetCoinAddressParams, opts ...option.RequestOption) (res *DepositAddress, err error) {

@@ -39,7 +39,8 @@ func NewWithdrawService(opts ...option.RequestOption) (r WithdrawService) {
 // GET /v1/withdraw
 //
 // - docs(kr): https://docs.upbit.com/kr/reference/get-withdrawal
-// - docs(global): https://global-docs.upbit.com/reference/get-withdrawal
+// - docs(sg/th): https://global-docs.upbit.com/reference/get-withdrawal
+// - docs(id): https://docs.upbit.co.id/reference/get-withdrawal
 //
 // Retrieves the latest single withdrawal information. To query a specific
 // withdrawal, you can specify the withdrawal’s UUID or transaction ID (TXID).
@@ -55,7 +56,8 @@ func (r *WithdrawService) Get(ctx context.Context, query WithdrawGetParams, opts
 // GET /v1/withdraws
 //
 // - docs(kr): https://docs.upbit.com/kr/reference/list-withdrawals
-// - docs(global): https://global-docs.upbit.com/reference/list-withdrawals
+// - docs(sg/th): https://global-docs.upbit.com/reference/list-withdrawals
+// - docs(id): https://docs.upbit.co.id/reference/list-withdrawals
 //
 // Retrieves latest withdrawal list.
 func (r *WithdrawService) List(ctx context.Context, query WithdrawListParams, opts ...option.RequestOption) (res *pagination.UuidCursorIDPage[Withdraw], err error) {
@@ -80,7 +82,8 @@ func (r *WithdrawService) List(ctx context.Context, query WithdrawListParams, op
 // GET /v1/withdraws
 //
 // - docs(kr): https://docs.upbit.com/kr/reference/list-withdrawals
-// - docs(global): https://global-docs.upbit.com/reference/list-withdrawals
+// - docs(sg/th): https://global-docs.upbit.com/reference/list-withdrawals
+// - docs(id): https://docs.upbit.co.id/reference/list-withdrawals
 //
 // Retrieves latest withdrawal list.
 func (r *WithdrawService) ListAutoPaging(ctx context.Context, query WithdrawListParams, opts ...option.RequestOption) *pagination.UuidCursorIDPageAutoPager[Withdraw] {
@@ -92,7 +95,8 @@ func (r *WithdrawService) ListAutoPaging(ctx context.Context, query WithdrawList
 // DELETE /v1/withdraws/coin
 //
 // - docs(kr): https://docs.upbit.com/kr/reference/cancel-withdrawal
-// - docs(global): https://global-docs.upbit.com/reference/cancel-withdrawal
+// - docs(sg/th): https://global-docs.upbit.com/reference/cancel-withdrawal
+// - docs(id): https://docs.upbit.co.id/reference/cancel-withdrawal
 //
 // Cancel a completed digital asset withdrawal request by specifying the withdrawal
 // UUID.
@@ -123,7 +127,8 @@ func (r *WithdrawService) NewKrwWithdrawal(ctx context.Context, body WithdrawNew
 // POST /v1/withdraws/coin
 //
 // - docs(kr): https://docs.upbit.com/kr/reference/withdraw
-// - docs(global): https://global-docs.upbit.com/reference/withdraw
+// - docs(sg/th): https://global-docs.upbit.com/reference/withdraw
+// - docs(id): https://docs.upbit.co.id/reference/withdraw
 //
 // Requests a withdrawal of digital asset.
 func (r *WithdrawService) NewWithdrawal(ctx context.Context, body WithdrawNewWithdrawalParams, opts ...option.RequestOption) (res *Withdraw, err error) {
@@ -137,9 +142,9 @@ func (r *WithdrawService) NewWithdrawal(ctx context.Context, body WithdrawNewWit
 //
 // GET /v1/withdraws/coin_addresses
 //
-//   - docs(kr): https://docs.upbit.com/kr/reference/list-withdrawal-addresses
-//   - docs(global):
-//     https://global-docs.upbit.com/reference/list-withdrawal-addresses
+// - docs(kr): https://docs.upbit.com/kr/reference/list-withdrawal-addresses
+// - docs(sg/th): https://global-docs.upbit.com/reference/list-withdrawal-addresses
+// - docs(id): https://docs.upbit.co.id/reference/list-withdrawal-addresses
 //
 // Retrieves the list of withdrawal whitelist addresses registered to the account.
 func (r *WithdrawService) ListCoinAddresses(ctx context.Context, opts ...option.RequestOption) (res *[]WithdrawListCoinAddressesResponse, err error) {
@@ -154,8 +159,9 @@ func (r *WithdrawService) ListCoinAddresses(ctx context.Context, opts ...option.
 // GET /v1/withdraws/chance
 //
 //   - docs(kr): https://docs.upbit.com/kr/reference/available-withdrawal-information
-//   - docs(global):
+//   - docs(sg/th):
 //     https://global-docs.upbit.com/reference/available-withdrawal-information
+//   - docs(id): https://docs.upbit.co.id/reference/available-withdrawal-information
 //
 // Retrieves withdrawal availability information for the specified currency,
 // including its withdrawal policy and user balance.

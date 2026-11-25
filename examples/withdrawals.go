@@ -15,8 +15,8 @@
 //
 // Real execution (DRY_RUN=false):
 //
-//	Prints withdrawal chance but does not execute actual withdrawals.
-//	To execute a real withdrawal, modify the address/amount in the code first.
+//	Requests a KRW withdrawal using the default 10,000 KRW amount and kakao authentication.
+//	Digital asset withdrawals require an actual withdrawal address in the code.
 //
 //	WARNING: withdrawals are irreversible. Sending to a wrong address may lose your funds.
 //
@@ -25,7 +25,7 @@
 //	# Dry run (default) — read-only
 //	UPBIT_ACCESS_KEY=<key> UPBIT_SECRET_KEY=<secret> go run examples/withdrawals.go
 //
-//	# Real execution — prints withdrawal chance (code must be modified to execute actual withdrawal)
+//	# Real execution — includes a KRW withdrawal request (default: 10,000 KRW, kakao)
 //	DRY_RUN=false UPBIT_ACCESS_KEY=<key> UPBIT_SECRET_KEY=<secret> go run examples/withdrawals.go
 package main
 

@@ -39,7 +39,8 @@ func NewCandleService(opts ...option.RequestOption) (r CandleService) {
 // GET /v1/candles/days
 //
 // - docs(kr): https://docs.upbit.com/kr/reference/list-candles-days
-// - docs(global): https://global-docs.upbit.com/reference/list-candles-days
+// - docs(sg/th): https://global-docs.upbit.com/reference/list-candles-days
+// - docs(id): https://docs.upbit.co.id/reference/list-candles-days
 //
 // Retrieves the list of candles per day.
 func (r *CandleService) ListDays(ctx context.Context, query CandleListDaysParams, opts ...option.RequestOption) (res *[]CandleListDaysResponse, err error) {
@@ -55,7 +56,8 @@ func (r *CandleService) ListDays(ctx context.Context, query CandleListDaysParams
 // GET /v1/candles/minutes/{unit}
 //
 // - docs(kr): https://docs.upbit.com/kr/reference/list-candles-minutes
-// - docs(global): https://global-docs.upbit.com/reference/list-candles-minutes
+// - docs(sg/th): https://global-docs.upbit.com/reference/list-candles-minutes
+// - docs(id): https://docs.upbit.co.id/reference/list-candles-minutes
 //
 // Retrieves the list of candles per minute.
 func (r *CandleService) ListMinutes(ctx context.Context, unit int64, query CandleListMinutesParams, opts ...option.RequestOption) (res *[]CandleListMinutesResponse, err error) {
@@ -71,7 +73,8 @@ func (r *CandleService) ListMinutes(ctx context.Context, unit int64, query Candl
 // GET /v1/candles/months
 //
 // - docs(kr): https://docs.upbit.com/kr/reference/list-candles-months
-// - docs(global): https://global-docs.upbit.com/reference/list-candles-months
+// - docs(sg/th): https://global-docs.upbit.com/reference/list-candles-months
+// - docs(id): https://docs.upbit.co.id/reference/list-candles-months
 //
 // Retrieves the list of candles per month.
 func (r *CandleService) ListMonths(ctx context.Context, query CandleListMonthsParams, opts ...option.RequestOption) (res *[]CandlePeriod, err error) {
@@ -87,7 +90,8 @@ func (r *CandleService) ListMonths(ctx context.Context, query CandleListMonthsPa
 // GET /v1/candles/seconds
 //
 // - docs(kr): https://docs.upbit.com/kr/reference/list-candles-seconds
-// - docs(global): https://global-docs.upbit.com/reference/list-candles-seconds
+// - docs(sg/th): https://global-docs.upbit.com/reference/list-candles-seconds
+// - docs(id): https://docs.upbit.co.id/reference/list-candles-seconds
 //
 // Retrieves the list of candles per second.
 func (r *CandleService) ListSeconds(ctx context.Context, query CandleListSecondsParams, opts ...option.RequestOption) (res *[]Candle, err error) {
@@ -103,7 +107,8 @@ func (r *CandleService) ListSeconds(ctx context.Context, query CandleListSeconds
 // GET /v1/candles/weeks
 //
 // - docs(kr): https://docs.upbit.com/kr/reference/list-candles-weeks
-// - docs(global): https://global-docs.upbit.com/reference/list-candles-weeks
+// - docs(sg/th): https://global-docs.upbit.com/reference/list-candles-weeks
+// - docs(id): https://docs.upbit.co.id/reference/list-candles-weeks
 //
 // Retrieves the list of candles per week.
 func (r *CandleService) ListWeeks(ctx context.Context, query CandleListWeeksParams, opts ...option.RequestOption) (res *[]CandlePeriod, err error) {
@@ -119,7 +124,8 @@ func (r *CandleService) ListWeeks(ctx context.Context, query CandleListWeeksPara
 // GET /v1/candles/years
 //
 // - docs(kr): https://docs.upbit.com/kr/reference/list-candles-years
-// - docs(global): https://global-docs.upbit.com/reference/list-candles-years
+// - docs(sg/th): https://global-docs.upbit.com/reference/list-candles-years
+// - docs(id): https://docs.upbit.co.id/reference/list-candles-years
 //
 // Retrieves the list of candles per year.
 func (r *CandleService) ListYears(ctx context.Context, query CandleListYearsParams, opts ...option.RequestOption) (res *[]CandlePeriod, err error) {
@@ -137,10 +143,6 @@ type Candle struct {
 	// The total traded volume (in the base asset) accumulated during the candle
 	// period.
 	CandleAccTradeVolume string `json:"candle_acc_trade_volume" api:"required"`
-	// Start time of the candle period in KST. Supported in KOREA only.
-	//
-	// [Format]: yyyy-MM-dd'T'HH:mm:ss
-	CandleDateTimeKst string `json:"candle_date_time_kst" api:"required"`
 	// Start time of the candle period in UTC.
 	//
 	// [Format]: yyyy-MM-dd'T'HH:mm:ss
@@ -161,11 +163,14 @@ type Candle struct {
 	// The closing price of the candle, representing the last trading price during the
 	// candle period.
 	TradePrice string `json:"trade_price" api:"required"`
+	// Start time of the candle period in KST. Supported in KOREA only.
+	//
+	// [Format]: yyyy-MM-dd'T'HH:mm:ss
+	CandleDateTimeKst string `json:"candle_date_time_kst"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		CandleAccTradePrice  respjson.Field
 		CandleAccTradeVolume respjson.Field
-		CandleDateTimeKst    respjson.Field
 		CandleDateTimeUtc    respjson.Field
 		HighPrice            respjson.Field
 		LowPrice             respjson.Field
@@ -173,6 +178,7 @@ type Candle struct {
 		OpeningPrice         respjson.Field
 		Timestamp            respjson.Field
 		TradePrice           respjson.Field
+		CandleDateTimeKst    respjson.Field
 		ExtraFields          map[string]respjson.Field
 		raw                  string
 	} `json:"-"`

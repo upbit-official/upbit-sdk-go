@@ -15,18 +15,18 @@
 //
 // 실제 실행 (DRY_RUN=false):
 //
-//	출금 가능 정보를 출력하지만, 실제 출금은 실행하지 않습니다.
-//	실제 출금을 원하면 코드 내 주소/금액을 직접 수정한 뒤 실행하세요.
+//	원화 출금은 기본 10,000원·kakao 인증수단으로 실제 요청합니다.
+//	디지털 자산 출금은 코드의 출금 주소를 실제 주소로 변경해야 합니다.
 //
 //	주의: 출금은 비가역적입니다. 잘못된 주소로 출금하면 자산을 잃을 수 있습니다.
 //
 // 실행:
 //
 //	# Dry run (기본) — 조회만
-//	UPBIT_ACCESS_KEY=<key> UPBIT_SECRET_KEY=<secret> go run examples/withdrawals.go
+//	UPBIT_ACCESS_KEY=<key> UPBIT_SECRET_KEY=<secret> go run examples/withdrawals_kr.go
 //
-//	# 실제 실행 — 출금 가능 정보 표시 (실제 출금은 코드 수정 필요)
-//	DRY_RUN=false UPBIT_ACCESS_KEY=<key> UPBIT_SECRET_KEY=<secret> go run examples/withdrawals.go
+//	# 실제 실행 — 원화 출금 요청 포함 (기본 10,000원, kakao)
+//	DRY_RUN=false UPBIT_ACCESS_KEY=<key> UPBIT_SECRET_KEY=<secret> go run examples/withdrawals_kr.go
 package main
 
 import (

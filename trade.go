@@ -37,8 +37,9 @@ func NewTradeService(opts ...option.RequestOption) (r TradeService) {
 //
 // GET /v1/trades/ticks
 //
-// - docs(kr): https://docs.upbit.com/kr/reference/list-pair-trades
-// - docs(global): https://global-docs.upbit.com/reference/list-pair-trades
+// - docs(kr): https://docs.upbit.com/kr/reference/recent-trades-history
+// - docs(sg/th): https://global-docs.upbit.com/reference/recent-trades-history
+// - docs(id): https://docs.upbit.co.id/reference/recent-trades-history
 //
 // Retrieves recent trades for the specified pair.
 func (r *TradeService) List(ctx context.Context, query TradeListParams, opts ...option.RequestOption) (res *[]TradeListResponse, err error) {

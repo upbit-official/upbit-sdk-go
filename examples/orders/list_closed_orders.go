@@ -19,7 +19,6 @@ func exampleListClosedOrders() {
 	)
 	params := upbit.OrderListClosedParams{
 		Market: upbit.String("KRW-BTC"),
-		States: []upbit.ClosedOrderState{"done", "cancel"},
 	}
 	res, err := client.Orders.ListClosed(context.TODO(), params)
 	if err != nil {

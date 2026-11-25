@@ -18,8 +18,7 @@ func exampleListPocketAPIKeys() {
 		option.WithSecretKey(os.Getenv("UPBIT_SECRET_KEY")),
 	)
 	params := upbit.PocketListAPIKeysParams{
-		Uuids:          []string{"9ca023a5-851b-4fec-9f0a-48cd83c2eaae"},
-		IncludeExpired: upbit.Bool(false),
+		Uuids: []string{"9ca023a5-851b-4fec-9f0a-48cd83c2eaae"},
 	}
 	res, err := client.Pockets.ListAPIKeys(context.TODO(), params)
 	if err != nil {

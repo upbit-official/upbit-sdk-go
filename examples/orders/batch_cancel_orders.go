@@ -19,7 +19,6 @@ func exampleBatchCancelOrders() {
 	)
 	params := upbit.OrderCancelOpenParams{
 		QuoteCurrencies: upbit.String("KRW,BTC"),
-		CancelSide:      "all",
 		ExcludedPairs:   upbit.String("KRW-ETH,BTC-XRP"),
 	}
 	res, err := client.Orders.CancelOpen(context.TODO(), params)

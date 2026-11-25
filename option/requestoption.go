@@ -284,7 +284,7 @@ func WithEnvironmentSg() RequestOption {
 // environment to be the "id" environment. An environment specifies which base URL
 // to use by default.
 func WithEnvironmentId() RequestOption {
-	return requestconfig.WithDefaultBaseURL("https://id-api.upbit.com/")
+	return requestconfig.WithDefaultBaseURL("https://api.upbit.co.id/")
 }
 
 // WithEnvironmentTh returns a RequestOption that sets the current

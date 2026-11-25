@@ -28,12 +28,18 @@ Or to pin the version:
 <!-- x-release-please-start-version -->
 
 ```sh
-go get -u 'github.com/upbit-official/upbit-sdk-go@v1.0.0'
+go get -u 'github.com/upbit-official/upbit-sdk-go@v1.0.1'
 ```
 
 <!-- x-release-please-end -->
 
 ## Usage
+
+### Indonesia API host
+
+In v1.0.1, `option.WithEnvironmentId()` uses `https://api.upbit.co.id/`. On older SDK versions, override the host with `option.WithBaseURL("https://api.upbit.co.id/")`. Update any explicit base URL when upgrading; custom URLs retain their configured values.
+
+API documentation: [Korea](https://docs.upbit.com/kr), [Indonesia](https://docs.upbit.co.id), [Singapore and Thailand](https://global-docs.upbit.com).
 
 The full API of this SDK can be found in [api.md](api.md).
 

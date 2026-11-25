@@ -39,7 +39,8 @@ func NewOrderService(opts ...option.RequestOption) (r OrderService) {
 // POST /v1/orders
 //
 // - docs(kr): https://docs.upbit.com/kr/reference/new-order
-// - docs(global): https://global-docs.upbit.com/reference/new-order
+// - docs(sg/th): https://global-docs.upbit.com/reference/new-order
+// - docs(id): https://docs.upbit.co.id/reference/new-order
 //
 // Order parameter rules by `ord_type`:
 //
@@ -66,7 +67,8 @@ func (r *OrderService) New(ctx context.Context, body OrderNewParams, opts ...opt
 // GET /v1/order
 //
 // - docs(kr): https://docs.upbit.com/kr/reference/get-order
-// - docs(global): https://global-docs.upbit.com/reference/get-order
+// - docs(sg/th): https://global-docs.upbit.com/reference/get-order
+// - docs(id): https://docs.upbit.co.id/reference/get-order
 //
 // **Required (one of):** `uuid` or `identifier` must be provided.
 func (r *OrderService) Get(ctx context.Context, query OrderGetParams, opts ...option.RequestOption) (res *Order, err error) {
@@ -81,7 +83,8 @@ func (r *OrderService) Get(ctx context.Context, query OrderGetParams, opts ...op
 // DELETE /v1/order
 //
 // - docs(kr): https://docs.upbit.com/kr/reference/cancel-order
-// - docs(global): https://global-docs.upbit.com/reference/cancel-order
+// - docs(sg/th): https://global-docs.upbit.com/reference/cancel-order
+// - docs(id): https://docs.upbit.co.id/reference/cancel-order
 //
 // **Required (one of):** `uuid` or `identifier` must be provided.
 func (r *OrderService) Cancel(ctx context.Context, body OrderCancelParams, opts ...option.RequestOption) (res *Order, err error) {
@@ -96,7 +99,8 @@ func (r *OrderService) Cancel(ctx context.Context, body OrderCancelParams, opts 
 // POST /v1/orders/cancel_and_new
 //
 // - docs(kr): https://docs.upbit.com/kr/reference/cancel-and-new-order
-// - docs(global): https://global-docs.upbit.com/reference/cancel-and-new-order
+// - docs(sg/th): https://global-docs.upbit.com/reference/cancel-and-new-order
+// - docs(id): https://docs.upbit.co.id/reference/cancel-and-new-order
 //
 // Cancel existing order and create new order in a single request.
 func (r *OrderService) CancelAndNew(ctx context.Context, body OrderCancelAndNewParams, opts ...option.RequestOption) (res *OrderCancelAndNewResponse, err error) {
@@ -111,7 +115,8 @@ func (r *OrderService) CancelAndNew(ctx context.Context, body OrderCancelAndNewP
 // DELETE /v1/orders/uuids
 //
 // - docs(kr): https://docs.upbit.com/kr/reference/cancel-orders-by-ids
-// - docs(global): https://global-docs.upbit.com/reference/cancel-orders-by-ids
+// - docs(sg/th): https://global-docs.upbit.com/reference/cancel-orders-by-ids
+// - docs(id): https://docs.upbit.co.id/reference/cancel-orders-by-ids
 //
 // **Required (one of):** `uuids` or `identifiers` must be provided.
 func (r *OrderService) CancelByUuids(ctx context.Context, body OrderCancelByUuidsParams, opts ...option.RequestOption) (res *BatchCancelResult, err error) {
@@ -126,7 +131,8 @@ func (r *OrderService) CancelByUuids(ctx context.Context, body OrderCancelByUuid
 // DELETE /v1/orders/open
 //
 // - docs(kr): https://docs.upbit.com/kr/reference/batch-cancel-orders
-// - docs(global): https://global-docs.upbit.com/reference/batch-cancel-orders
+// - docs(sg/th): https://global-docs.upbit.com/reference/batch-cancel-orders
+// - docs(id): https://docs.upbit.co.id/reference/batch-cancel-orders
 //
 // Batch cancel up to 300 orders that satisfy the specified conditions.
 func (r *OrderService) CancelOpen(ctx context.Context, body OrderCancelOpenParams, opts ...option.RequestOption) (res *BatchCancelResult, err error) {
@@ -141,7 +147,8 @@ func (r *OrderService) CancelOpen(ctx context.Context, body OrderCancelOpenParam
 // GET /v1/orders/uuids
 //
 // - docs(kr): https://docs.upbit.com/kr/reference/list-orders-by-ids
-// - docs(global): https://global-docs.upbit.com/reference/list-orders-by-ids
+// - docs(sg/th): https://global-docs.upbit.com/reference/list-orders-by-ids
+// - docs(id): https://docs.upbit.co.id/reference/list-orders-by-ids
 //
 // **Required (one of):** `uuids` or `identifiers` must be provided.
 func (r *OrderService) ListByUuids(ctx context.Context, query OrderListByUuidsParams, opts ...option.RequestOption) (res *[]Order, err error) {
@@ -156,7 +163,8 @@ func (r *OrderService) ListByUuids(ctx context.Context, query OrderListByUuidsPa
 // GET /v1/orders/closed
 //
 // - docs(kr): https://docs.upbit.com/kr/reference/list-closed-orders
-// - docs(global): https://global-docs.upbit.com/reference/list-closed-orders
+// - docs(sg/th): https://global-docs.upbit.com/reference/list-closed-orders
+// - docs(id): https://docs.upbit.co.id/reference/list-closed-orders
 //
 // Retrieves the list of closed orders.
 func (r *OrderService) ListClosed(ctx context.Context, query OrderListClosedParams, opts ...option.RequestOption) (res *[]Order, err error) {
@@ -171,7 +179,8 @@ func (r *OrderService) ListClosed(ctx context.Context, query OrderListClosedPara
 // GET /v1/orders/open
 //
 // - docs(kr): https://docs.upbit.com/kr/reference/list-open-orders
-// - docs(global): https://global-docs.upbit.com/reference/list-open-orders
+// - docs(sg/th): https://global-docs.upbit.com/reference/list-open-orders
+// - docs(id): https://docs.upbit.co.id/reference/list-open-orders
 //
 // Retrieves the list of open orders that are currently pending execution.
 func (r *OrderService) ListOpen(ctx context.Context, query OrderListOpenParams, opts ...option.RequestOption) (res *pagination.PageNumberPage[Order], err error) {
@@ -196,7 +205,8 @@ func (r *OrderService) ListOpen(ctx context.Context, query OrderListOpenParams, 
 // GET /v1/orders/open
 //
 // - docs(kr): https://docs.upbit.com/kr/reference/list-open-orders
-// - docs(global): https://global-docs.upbit.com/reference/list-open-orders
+// - docs(sg/th): https://global-docs.upbit.com/reference/list-open-orders
+// - docs(id): https://docs.upbit.co.id/reference/list-open-orders
 //
 // Retrieves the list of open orders that are currently pending execution.
 func (r *OrderService) ListOpenAutoPaging(ctx context.Context, query OrderListOpenParams, opts ...option.RequestOption) *pagination.PageNumberPageAutoPager[Order] {
@@ -208,8 +218,9 @@ func (r *OrderService) ListOpenAutoPaging(ctx context.Context, query OrderListOp
 // GET /v1/orders/chance
 //
 //   - docs(kr): https://docs.upbit.com/kr/reference/available-order-information
-//   - docs(global):
+//   - docs(sg/th):
 //     https://global-docs.upbit.com/reference/available-order-information
+//   - docs(id): https://docs.upbit.co.id/reference/available-order-information
 //
 // Retrieves the order availability information for the specified pair.
 func (r *OrderService) GetChance(ctx context.Context, query OrderGetChanceParams, opts ...option.RequestOption) (res *OrderGetChanceResponse, err error) {
@@ -219,12 +230,13 @@ func (r *OrderService) GetChance(ctx context.Context, query OrderGetChanceParams
 	return res, err
 }
 
-// Test Order Creation
+// Test Order
 //
 // POST /v1/orders/test
 //
 // - docs(kr): https://docs.upbit.com/kr/reference/order-test
-// - docs(global): https://global-docs.upbit.com/reference/order-test
+// - docs(sg/th): https://global-docs.upbit.com/reference/order-test
+// - docs(id): https://docs.upbit.co.id/reference/order-test
 //
 // Order parameter rules by `ord_type`:
 //

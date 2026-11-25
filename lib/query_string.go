@@ -36,6 +36,9 @@ func QueryStringFromJSONBody(body []byte) (string, error) {
 	if len(body) == 0 {
 		return "", nil
 	}
+	if !gjson.ValidBytes(body) {
+		return "", fmt.Errorf("query_string: invalid JSON body")
+	}
 
 	parsed := gjson.ParseBytes(body)
 	if !parsed.IsObject() {

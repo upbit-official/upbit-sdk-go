@@ -35,7 +35,8 @@ func NewWalletStatusService(opts ...option.RequestOption) (r WalletStatusService
 // GET /v1/status/wallet
 //
 // - docs(kr): https://docs.upbit.com/kr/reference/get-service-status
-// - docs(global): https://global-docs.upbit.com/reference/get-service-status
+// - docs(sg/th): https://global-docs.upbit.com/reference/get-service-status
+// - docs(id): https://docs.upbit.co.id/reference/get-service-status
 //
 // Retrieves deposit and withdrawal service status for all currencies.
 func (r *WalletStatusService) List(ctx context.Context, opts ...option.RequestOption) (res *[]WalletStatusListResponse, err error) {

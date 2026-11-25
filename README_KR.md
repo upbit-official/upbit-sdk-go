@@ -28,12 +28,18 @@ import (
 <!-- x-release-please-start-version -->
 
 ```sh
-go get -u 'github.com/upbit-official/upbit-sdk-go@v1.0.0'
+go get -u 'github.com/upbit-official/upbit-sdk-go@v1.0.1'
 ```
 
 <!-- x-release-please-end -->
 
 ## 사용법
+
+### 인도네시아 API 주소
+
+v1.0.1에서 `option.WithEnvironmentId()`는 `https://api.upbit.co.id/`를 사용한다. 구버전에서는 `option.WithBaseURL("https://api.upbit.co.id/")`로 주소를 지정한다. 직접 설정한 주소는 SDK 업데이트 후에도 유지되므로 별도로 갱신한다.
+
+국가별 API 문서: [한국](https://docs.upbit.com/kr), [인도네시아](https://docs.upbit.co.id), [싱가포르·태국](https://global-docs.upbit.com).
 
 SDK의 전체 API는 [api.md](api.md)에서 확인할 수 있습니다.
 

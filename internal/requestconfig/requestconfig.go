@@ -349,10 +349,19 @@ func (cfg *RequestConfig) Execute() (err error) {
 			cfg.Request.GetBody = func() (io.ReadCloser, error) { return io.NopCloser(bytes.NewReader(b)), nil }
 			cfg.Request.Body, _ = cfg.Request.GetBody()
 		case *bytes.Reader:
+			snapshot := *body
 			cfg.Request.ContentLength = int64(body.Len())
 			cfg.Request.GetBody = func() (io.ReadCloser, error) {
-				_, err := body.Seek(0, 0)
-				return io.NopCloser(body), err
+				copy := snapshot
+				return io.NopCloser(&copy), nil
+			}
+			cfg.Request.Body, _ = cfg.Request.GetBody()
+		case *strings.Reader:
+			snapshot := *body
+			cfg.Request.ContentLength = int64(body.Len())
+			cfg.Request.GetBody = func() (io.ReadCloser, error) {
+				copy := snapshot
+				return io.NopCloser(&copy), nil
 			}
 			cfg.Request.Body, _ = cfg.Request.GetBody()
 		default:
